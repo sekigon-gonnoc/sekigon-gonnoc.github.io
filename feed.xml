@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-12-12T02:03:07+09:00</updated><id>/feed.xml</id><subtitle>年に一回のアドベントカレンダー投稿を置く場所</subtitle><entry><title type="html">チラシ-F.gbr</title><link href="/2020/12/11/keyboard-advent-calendar.html" rel="alternate" type="text/html" title="チラシ-F.gbr" /><published>2020-12-11T23:38:38+09:00</published><updated>2020-12-11T23:38:38+09:00</updated><id>/2020/12/11/keyboard-advent-calendar</id><content type="html" xml:base="/2020/12/11/keyboard-advent-calendar.html">&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://adventar.org/calendars/5279&quot;&gt;キーボード #1 Advent Calendar 2020&lt;/a&gt; 12 日目の担当、せきごんです。&lt;/p&gt;
+
+&lt;p&gt;自作キーボード用のモジュールとかちょっと変わった自作キーボードを作っています。&lt;/p&gt;
+
+&lt;p&gt;今年もチラ裏の予定でしたが宣伝っぽい内容が多かったので表面になりました。&lt;/p&gt;
+
+&lt;p&gt;今年作ったものをざっと振り返っていきます。&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#今年作ったもの&quot; id=&quot;markdown-toc-今年作ったもの&quot;&gt;今年作ったもの&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#トラックボールモジュール用レベル変換基板&quot; id=&quot;markdown-toc-トラックボールモジュール用レベル変換基板&quot;&gt;トラックボールモジュール用レベル変換基板&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#kugel-1-rev2&quot; id=&quot;markdown-toc-kugel-1-rev2&quot;&gt;Kugel-1 rev2&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#ble-micro-pro-web-configurator&quot; id=&quot;markdown-toc-ble-micro-pro-web-configurator&quot;&gt;BLE Micro Pro Web Configurator&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#toybox-keyboard&quot; id=&quot;markdown-toc-toybox-keyboard&quot;&gt;Toybox keyboard&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#lpme-io2&quot; id=&quot;markdown-toc-lpme-io2&quot;&gt;LPME-IO2&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#keyboard-quantizer&quot; id=&quot;markdown-toc-keyboard-quantizer&quot;&gt;Keyboard Quantizer&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#corne-ecwl&quot; id=&quot;markdown-toc-corne-ecwl&quot;&gt;Corne ECWL&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#meec&quot; id=&quot;markdown-toc-meec&quot;&gt;meEC&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#grs-70ec&quot; id=&quot;markdown-toc-grs-70ec&quot;&gt;GRS-70EC&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#今年を振り返って&quot; id=&quot;markdown-toc-今年を振り返って&quot;&gt;今年を振り返って&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;今年作ったもの&quot;&gt;今年作ったもの&lt;/h2&gt;
+
+&lt;h3 id=&quot;トラックボールモジュール用レベル変換基板&quot;&gt;トラックボールモジュール用レベル変換基板&lt;/h3&gt;
+
+&lt;p&gt;ビットトレードワンのトラックボールモジュールを自作キーボードで使うための基板。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://nogikes.booth.pm/items/2008258&quot;&gt;BOOTH&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;今週販売のお知らせがあるという例のトラックボール用レベル変換基板ができました。ProMicroの空きピン2本に繋げばOK。ケーブルの根本に負荷が掛からないように上手いことやってね。サイズ小さいのでマウントプレートの穴通せるからこの前のツイートのマウンタでキーの代わりにつけられそう &lt;a href=&quot;https://t.co/3nnFPgwcrj&quot;&gt;pic.twitter.com/3nnFPgwcrj&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1252142822368489472?ref_src=twsrc%5Etfw&quot;&gt;April 20, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;kugel-1-rev2&quot;&gt;Kugel-1 rev2&lt;/h3&gt;
+
+&lt;p&gt;トラックボール部分を先ほどのモジュールに変更したやつ。&lt;/p&gt;
+
+&lt;p&gt;このキーボードのためにレベル変換基板を設計したといっても過言ではない。&lt;br /&gt;
+特に理由もなくロープロ版がお蔵入りになっている。。。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;サムネが反映されてないけどrev2はビット・トレード・ワンのトラックボールモジュールを使います。 &lt;a href=&quot;https://t.co/oTA0Csy65F&quot;&gt;pic.twitter.com/oTA0Csy65F&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1274578368592142337?ref_src=twsrc%5Etfw&quot;&gt;June 21, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;スペーサー足りてないけどロープロ版Kugel-1の試作機できた &lt;a href=&quot;https://t.co/cpGrUUMRA7&quot;&gt;pic.twitter.com/cpGrUUMRA7&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1281792033993060352?ref_src=twsrc%5Etfw&quot;&gt;July 11, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;ble-micro-pro-web-configurator&quot;&gt;BLE Micro Pro Web Configurator&lt;/h3&gt;
+
+&lt;p&gt;Web ブラウザ(Chrome)から BLE Micro Pro のアップデートと初期設定ができるようにしたやつ。&lt;/p&gt;
+
+&lt;p&gt;BLE Micro Pro の新ファームでキーマップ書き換えなどが簡単にできるようになったのはいいものの、
+依然として最初の導入部分でトラブルが多かったこともあって作ってみた。&lt;/p&gt;
+
+&lt;p&gt;体感としては導入に関するトラブル相談はだいぶ減った。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;とりあえず動いたので公開しました。マウスカチカチするだけでChromeからBLE Micro Proのアップデートとか設定とか（多分）できるやつです&lt;a href=&quot;https://t.co/H3qNXSfMYJ&quot;&gt;https://t.co/H3qNXSfMYJ&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1249260867339702272?ref_src=twsrc%5Etfw&quot;&gt;April 12, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;toybox-keyboard&quot;&gt;Toybox keyboard&lt;/h3&gt;
+
+&lt;p&gt;トラックパッドがついてるやつ。&lt;/p&gt;
+
+&lt;p&gt;地味にさっきのレベル変換基板を活用している。&lt;/p&gt;
+
+&lt;p&gt;IQS525 というマルチタッチ対応の IC を使ったトラックパッドモジュールを試作してみたりもしたが、
+校正に専用の治具が必要で自作には向かなそうなのでシングルタッチになった。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;新しいキーボードできた。トラックパッド搭載、Pro Micro1個またはBLE Micro Pro1~2個で動いて、無線で動かす場合には単4電池が使える。トラックパッドの部分を上段1Ux3その下が1U, 1.5Uに置き換えて普通の65%っぽく使うことも出来る。名前はtoybox（仮称）。部品少し余ってるからBoothに入れるかも &lt;a href=&quot;https://t.co/cLfYC5HDSP&quot;&gt;pic.twitter.com/cLfYC5HDSP&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1263428129621602305?ref_src=twsrc%5Etfw&quot;&gt;May 21, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;lpme-io2&quot;&gt;LPME-IO2&lt;/h3&gt;
+
+&lt;p&gt;LPME-IO の待機時消費電力を更に減らしたやつ。&lt;/p&gt;
+
+&lt;p&gt;Toybox の開発で得た知見をフィードバックした。&lt;/p&gt;
+
+&lt;p&gt;キーボードに合わせてハンダブリッジが必要になったけど今のところ問題なさそう？&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;LPME-IO | のぎけす屋 &lt;a href=&quot;https://t.co/gsfobcKyQm&quot;&gt;https://t.co/gsfobcKyQm&lt;/a&gt; &lt;a href=&quot;https://twitter.com/hashtag/booth_pm?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#booth_pm&lt;/a&gt; &lt;br /&gt;LPME-IO2になりました。キーボードに応じたハンダブリッジが必要になったかわりに待機時の消費電力が50から75%くらい改善されました&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1320196414492733443?ref_src=twsrc%5Etfw&quot;&gt;October 25, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;keyboard-quantizer&quot;&gt;Keyboard Quantizer&lt;/h3&gt;
+
+&lt;p&gt;一般的な USB キーボードを QMK 対応するやつ。&lt;/p&gt;
+
+&lt;p&gt;トラックポイントがついてるメカニカルキーボードが発売されて一瞬欲しくなり、&lt;br /&gt;
+「でも、QMK 対応してないんでしょう？」って物欲が抑えられたので作ってみた。&lt;/p&gt;
+
+&lt;p&gt;最近ちょうどいいケースに入るようになって製品感が増した。
+NKRO なキーボード等にはまだ対応していないので、
+ファームのどこをいじったらいいのかとか、もう少し技術情報をまとめたい。&lt;/p&gt;
+
+&lt;p&gt;物欲が創作欲に変換されたので発端のキーボードは結局買ってない。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-conversation=&quot;none&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;普通のキーボードをQMK対応にし太郎はKeyboard Quantizerという名前になりました。2個ポートがあるのでキーボード2台で分割扱いにしたりできる。VIAにも対応させてみたけど普通のキーボードはキー数が多いのでPro Microだと2レイヤしか設定できない。。。 &lt;a href=&quot;https://t.co/LTcvk7v9PF&quot;&gt;pic.twitter.com/LTcvk7v9PF&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1288372614608506881?ref_src=twsrc%5Etfw&quot;&gt;July 29, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;普通のUSBキーボードをQMK化できるKeyboard Quantizerが新しくなりました。atmega32u4を内蔵＆それっぽいケース&lt;a href=&quot;https://t.co/xrhPC8MfAO&quot;&gt;https://t.co/xrhPC8MfAO&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1335434363241041920?ref_src=twsrc%5Etfw&quot;&gt;December 6, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;corne-ecwl&quot;&gt;Corne ECWL&lt;/h3&gt;
+
+&lt;p&gt;Corne を静電容量&amp;amp;無線対応したやつ。一種の&lt;a href=&quot;https://ixyqcjwy.fanbox.cc/posts/376960&quot;&gt;敵討ち&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;はじめて技術情報を文書にまとめたので詳細はそちらに。
+年内に再入荷予定。&lt;/p&gt;
+
+&lt;p&gt;ついでに単 4 電池で駆動するためのモジュールも作ってみた。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;静電容量式完全無線Corne 打鍵動画 &lt;a href=&quot;https://t.co/4kfk9xmCDK&quot;&gt;pic.twitter.com/4kfk9xmCDK&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1291912082112225283?ref_src=twsrc%5Etfw&quot;&gt;August 8, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;書くの飽きたのはRe:VIEWでsiunitx使ってμAをちゃんと表示するのができなくて諦めただけで内容はちゃんと書きました&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1305461771046584322?ref_src=twsrc%5Etfw&quot;&gt;September 14, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;単4電池を昇圧してBLE Micro Proの電源にするためのモジュール。電池の電圧が下がってきたらカラータイマーが点滅して教えてくれる &lt;a href=&quot;https://t.co/TYPf6hUOXi&quot;&gt;pic.twitter.com/TYPf6hUOXi&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1301428345653977089?ref_src=twsrc%5Etfw&quot;&gt;September 3, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;meec&quot;&gt;meEC&lt;/h3&gt;
+
+&lt;p&gt;ビットレの静電容量スイッチと NiZ の静電容量スイッチを比較するためのやつ。&lt;/p&gt;
+
+&lt;p&gt;スキャン用の回路まで含めた Pro Micro 用の基板を作ってみた。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;僕にとっては割とどうでもいい情報ですがNIZとビットレの光り方比較です &lt;a href=&quot;https://t.co/JjX8nHyGPY&quot;&gt;pic.twitter.com/JjX8nHyGPY&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1312683929384579078?ref_src=twsrc%5Etfw&quot;&gt;October 4, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;und&quot; dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://t.co/c0dQDZTzUL&quot;&gt;https://t.co/c0dQDZTzUL&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1317089002260844544?ref_src=twsrc%5Etfw&quot;&gt;October 16, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;grs-70ec&quot;&gt;GRS-70EC&lt;/h3&gt;
+
+&lt;p&gt;ビットレの静電容量スイッチを使ったやつ。&lt;/p&gt;
+
+&lt;p&gt;外形が微妙に CherryMX 系のマウントプレートに適合してなかったり、
+キーを並べると NiZ とちがってスペーサーがほとんど入らなかったりして結構苦しんだ。
+(これは NiZ にも言えることですが)スタビもないし。&lt;/p&gt;
+
+&lt;p&gt;meEC と違ってスキャン用の回路だけをモジュール化していて、Pro Micro と組み合わせて使う。&lt;/p&gt;
+
+&lt;p&gt;今から微修正して年内にベータ版を出したい。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;GRS-70ECという自作キーボードの試作品。ビットレのスイッチを使った静電容量式自作キーボード。アナログ回路周りをモジュール化したので、Pro MicroとTRRSジャックとリセットスイッチとこのモジュールをはんだ付けするだけ。スイッチの組み立てが面倒だけど。ちょっと修正して今年中になんか出したい &lt;a href=&quot;https://t.co/QUFdKNAM5x&quot;&gt;pic.twitter.com/QUFdKNAM5x&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1337019740514967552?ref_src=twsrc%5Etfw&quot;&gt;December 10, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;今年を振り返って&quot;&gt;今年を振り返って&lt;/h2&gt;
+
+&lt;p&gt;今年の前半は昨年に引き続きポインティングデバイス、後半は静電容量式が中心だった感じ。トラックパッドはそのどちらでもあるかな？&lt;/p&gt;
+
+&lt;p&gt;作ってみたいものが多すぎて開発にリソースを投入しまくったせいで継続的な販売ができてないものが多いのが来年の課題。&lt;/p&gt;
+
+&lt;p&gt;この記事は Corne ECWL と GRS-70EC で書きました。&lt;/p&gt;</content><author><name></name></author><summary type="html"></summary></entry></feed>
