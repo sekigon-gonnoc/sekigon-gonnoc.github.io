@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>2021年の振り返りとRP2040(RPi Pico)を使って分割キーボードの通信をUSBにする話 | 年に一回のアドベントカレンダー投稿を置く場所</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="2021年の振り返りとRP2040(RPi Pico)を使って分割キーボードの通信をUSBにする話" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="静電容量式キーボード、Keyboard Quantizer、各種ソフト、RP2040（ラズパイPico）の活用など今年やったことをまとめます。" />
+<meta property="og:description" content="静電容量式キーボード、Keyboard Quantizer、各種ソフト、RP2040（ラズパイPico）の活用など今年やったことをまとめます。" />
+<link rel="canonical" href="/2021/12/19/keyboard-advent-calender.html" />
+<meta property="og:url" content="/2021/12/19/keyboard-advent-calender.html" />
+<meta property="og:site_name" content="年に一回のアドベントカレンダー投稿を置く場所" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-19T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="2021年の振り返りとRP2040(RPi Pico)を使って分割キーボードの通信をUSBにする話" />
+<meta name="twitter:site" content="@_gonnoc" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","headline":"2021年の振り返りとRP2040(RPi Pico)を使って分割キーボードの通信をUSBにする話","dateModified":"2021-12-19T00:00:00+00:00","datePublished":"2021-12-19T00:00:00+00:00","mainEntityOfPage":{"@type":"WebPage","@id":"/2021/12/19/keyboard-advent-calender.html"},"description":"静電容量式キーボード、Keyboard Quantizer、各種ソフト、RP2040（ラズパイPico）の活用など今年やったことをまとめます。","url":"/2021/12/19/keyboard-advent-calender.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="年に一回のアドベントカレンダー投稿を置く場所" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">年に一回のアドベントカレンダー投稿を置く場所</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">2021年の振り返りとRP2040(RPi Pico)を使って分割キーボードの通信をUSBにする話</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2021-12-19T00:00:00+00:00" itemprop="datePublished">
+        Dec 19, 2021
+      </time></p>
+      <link rel="stylesheet" href="/assets/css/linkpreview.css">
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <div id="share-bar" style="margin-top: 10px; margin-bottom: 10px;">
+    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button"
+        data-show-count="false">Tweet</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button"
+        data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja"
+        title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png"
+            alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8"
+        async="async"></script>
+</div>
+    <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p><a href="https://adventar.org/calendars/6246">キーボード #1 Advent Calender 2021</a> 19日目担当のせきごんです。BLE Micro Proなど<a href="https://nogikes.booth.pm/">キーボード関連のモジュールを色々</a>作っています。</p>
+
+<p>このブログ？のタイトルの通り一年に一個くらいしか記事を書かないせいで項目が多くまとまりが無くなってしまったので、本編では一年間をざっくりと振り返ることにして、詳細な項目はおまけとして載せておきます。<br />
+興味のある項目があったら読んでみてください。1つピックアップするならタイトルにも盛り込んだラズパイPicoで左右通信をUSBにする話がおすすめです。<br />
+一覧と概要は下記のとおりです。</p>
+
+<ul>
+  <li>目次</li>
+  <li><a href="#今年の印象的な出来事">今年の印象的な出来事</a>
+    <ul>
+      <li><a href="#半導体不足">半導体不足</a></li>
+      <li><a href="#keyboard-quantizerのアップデート">Keyboard Quantizerのアップデート</a></li>
+      <li><a href="#rp2040で遊ぶ">RP2040で遊ぶ</a></li>
+    </ul>
+  </li>
+  <li><a href="#おまけ">おまけ</a>
+    <ul>
+      <li><a href="#ecmx20">ECMX20</a>
+        <ul>
+          <li>静電容量/メカニカルスイッチ両対応の基板設計</li>
+        </ul>
+      </li>
+      <li><a href="#トラックパッドic評価用基板">トラックパッドIC評価用基板</a>
+        <ul>
+          <li>トラックパッドで遊べるマクロパッド</li>
+        </ul>
+      </li>
+      <li><a href="#pro-micro-web-writer">Pro Micro Web Writer</a>
+        <ul>
+          <li>ブラウザからPro Microにファームウェアを書き込む</li>
+        </ul>
+      </li>
+      <li><a href="#keyboard-quantizer-utility">Keyboard Quantizer Utility</a>
+        <ul>
+          <li>アクティブなアプリに応じてレイヤを切り替えたりできる常駐アプリ</li>
+        </ul>
+      </li>
+      <li><a href="#keyboard-quantizer-b">Keyboard Quantizer B</a>
+        <ul>
+          <li>USBキーボードをQMK対応させて無線化もできるドングル</li>
+        </ul>
+      </li>
+      <li><a href="#keyboard-quantizer-rev4">Keyboard Quantizer (rev.4)</a>
+        <ul>
+          <li>メインMCUをRP2040（ラズパイPicoのマイコン）にしたバージョンの開発経緯</li>
+        </ul>
+      </li>
+      <li><a href="#rp2040のqmk対応">RP2040のQMK対応</a>
+        <ul>
+          <li>RP2040でQMKを動かすまでの話</li>
+        </ul>
+      </li>
+      <li><a href="#pico-micro">Pico Micro</a>
+        <ul>
+          <li>RP2040を使ったPro Microサイズ基板</li>
+        </ul>
+      </li>
+      <li><a href="#rp2040を直接実装するキーボードについて">RP2040を直接実装するキーボードについて</a>
+        <ul>
+          <li>RP2040を直接実装する場合、atmega32u4とどんな違いがあるか検討</li>
+        </ul>
+      </li>
+      <li><a href="#アニメーションの再生">アニメーションの再生</a>
+        <ul>
+          <li>OLEDでアニメーションを再生する</li>
+        </ul>
+      </li>
+      <li><a href="#pico-pio-usb">Pico-PIO-USB</a>
+        <ul>
+          <li>分割キーボードの左右間通信をUSBにする</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>それでは今年を振り返っていきます。キーボードそのものという観点だと今年は昨年設計した <a href="https://twitter.com/_gonnoc/status/1291912082112225283">Corne ECWL</a>（静電容量完全無線Corne）をほぼ一年中使っていて、新しいキーボードは作りませんでした。</p>
+
+<p>では記事にするネタがないのかというとそんなことはなくて、今年も色々やってました。<br />
+新作ハードとしては<a href="https://nogikes.booth.pm/items/2712507">トラックパッドIC評価用基板</a>、<a href="https://nogikes.booth.pm/items/2710739">単4電池昇圧モジュール</a>、<a href="https://nogikes.booth.pm/items/2710697">静電容量スイッチスキャン用モジュール</a>、<a href="https://nogikes.booth.pm/items/2910601">ECMX20</a>、<a href="https://nogikes.booth.pm/items/3095820">Keyboard Quantizer B</a>、<a href="https://nogikes.booth.pm/items/2256612">Keyboard Quantizer(rev.4)</a>、<a href="https://nogikes.booth.pm/items/3214808">Pico Micro</a> があります。</p>
+
+<h2 id="今年の印象的な出来事">今年の印象的な出来事</h2>
+
+<h3 id="半導体不足">半導体不足</h3>
+
+<p>今年一番印象的だったのは部品の入手難対応です。。。</p>
+
+<p>今年一年でBLE Micro Pro、LPME-IO、トラックボール用レべル変換基板、静電容量スキャンモジュール、単4電池昇圧基板を部品変更、改版しました。写真を撮りなおしてないものも多数あり、画像とちょっと見た目の違うものが届くかもしれませんが機能的には同等なのでご容赦ください。</p>
+
+<p>部品の値上りや在庫不足は来年も続きそうなので引き続き辛そう。。。</p>
+
+<h3 id="keyboard-quantizerのアップデート">Keyboard Quantizerのアップデート</h3>
+
+<p>次は昨年から展開しているKeyboard Quantizerシリーズのアップデートです。Keyboard Quantizerについて簡単に説明すると、USBキーボードやマウスの信号を変換してあたかもQMKに対応しているかのように振る舞わせられるデバイスです。自分はもっぱらマウス（トラックボール）と組み合わせて使っています。自作キーボードをお使いの方にはマウスにQMKのレイヤやマクロ機能を追加できるというと何となく便利さが伝わるのではないでしょうか。各マウス専用のソフトに依存せずどこでも使えるのも便利です。</p>
+
+<p>1つ目のアップデートは無線出力対応版のKeyboard Quantizer Bです。無線出力に対応したことで、市販キーボードのQMK対応だけでなく自作キーボードの無線化にも使えるようになりました。</p>
+
+<p>2つ目のアップデートはRP2040（ラズパイPicoに乗っているマイコン）を使用したKeyboard Quantizer(rev.4)です。これはどちらかというとatmega32u4の入手難に対応を迫られた形ですが、結果としてROM容量の増加、USBハブ絡みの動作の改善などを達成できました。</p>
+
+<h3 id="rp2040で遊ぶ">RP2040で遊ぶ</h3>
+
+<p>さて、RP2040を載せたKeyboard Quantizerのハードを設計したところで、ファームウェアを用意しなければなりません。<br />
+RP2040で動くキーボードファームウェアにはKMKやPRKがありますが、新しいファームウェアの使い方を覚えるよりは簡単そうだったのでQMKが動くようにしました。RP2040上でもQMKが動くことがわかったので、ミッドマウントのUSB-Cコネクタを使用したpro microサイズのボードを設計したり、RP2040ならではの機能を実装してみたりもしました。詳細な内容はオマケにて。</p>
+
+<p>ざっくり今年を振り返るとこんな感じです。来年の計画は特にありません。また面白いテーマを見つけたら手を動かしていこうと思います。</p>
+
+<p>この記事はスマホとCorne ECWLで書きました。明日の担当はびあっこさん (@Biacco42) です。</p>
+
+<h2 id="おまけ">おまけ</h2>
+
+<h3 id="ecmx20">ECMX20</h3>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://nogikes.booth.pm/items/2910601" target="_blank">
+                        <img src="https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/2910601/e3c51476-0675-4118-90e6-654e60a54bfb_base_resized.jpg" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://nogikes.booth.pm/items/2910601" target="_blank">ECMX20 - のぎけす屋 - BOOTH</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">- ECMX20は静電容量式スイッチ、メカニカルスイッチの両方に対応した自作キーボードキットです - 静電容量式スイッチで組み立てたあとにメカニカルスイッチで組み直すことは容易ですが、逆は難しいです - メカニカルスイッチの場合でも静電容量式と同様にスキャンするという今までにない方式のため、予期せぬ問題が発生する可能性があります 詳細はビルドガイドをご確認ください https://github.com/sekigon-gonnoc/ecmx20</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>昨年に引き続き静電容量式キーボードの検討も進めました。静電容量式自作キーボードの課題としてスイッチの種類がメカニカルスイッチに比べて少ないことがあげられます。せっかく自作するのであれば、メカニカル、静電容量含めて多くの選択肢からスイッチを選べるようにしたいところです。同じ配列でメカニカルと静電容量の両方のPCBを設計するという手もありますが、単純に手間が2倍になるので解決策としては微妙です。そこで考案したのが<strong>静電容量式ベースのメカニカル/静電容量式両対応スキャン方式</strong>です。これは次の回路で実現できます。</p>
+
+<p><img src="/assets/images/2021-12-18-15-02-42.png" alt="" /></p>
+
+<p>この回路の下半分は静電容量式スイッチを示しています。静電容量式スイッチでは円錐ばねの状態による静電容量の変化を読み取ってスイッチの変位を連続的に検出しています。回路の上半分が今回工夫したメカニカルスイッチの読み取り回路を示しています。メカニカルスイッチのON/OFFによってコンデンサの接続状態が変化するため、静電容量式スイッチと同じ方式で静電容量をスキャンすることでスイッチの変化を検出できます。静電容量の変化がコンデンサが 繋がっていない状態 or 繋がっている状態 の2値的であるため、静電容量式とは異なり連続的な変化ではなくON/OFFのみの検出となります。さらに、このコンデンサを外付けの部品ではなくPCBのパターンで実現することで、外付け部品レス（ダイオードレス）のスイッチマトリクスにできます。</p>
+
+<p>実際のパターンはこちらの画像のようになります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2021-12-18-14-58-18.png" alt="" /></th>
+      <th><img src="/assets/images/2021-12-18-14-58-44.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>表面</td>
+      <td>裏面</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>静電容量式スイッチ用のパターンの半分の裏側にも同様の電極を用意することで、2つの電極によるコンデンサとします。容量としては6pF程度になります。</p>
+
+<p>静電容量のスキャンには静電容量スキャンモジュールを利用しました。スキャンに必要な部品が一通り実装されているので、列選択のピンとAD変換用のピンを何本か接続するだけでスキャンできます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2021-12-18-15-06-22.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>スイッチ部の回路図。各SWについているRは実験用なので実際には不要です。静電容量スキャンモジュールを使うことでダイオードレスの回路が簡単に実現できます。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>この方式を実装したマクロパッドがECMX20です。静電容量式スイッチを使う場合はスイッチのON/OFFを判定する閾値を調整することでAPC(Actuation Point Change)も実現できます。</p>
+
+<p>その他のソフト的な工夫としてレイヤごとにVIA/REMAPからLEDを設定できるようにしたりしました。<br />
+キーボードとはあまり関係がないので省きますが、Arduinoのシリアルプロッタのようなものをブラウザ上で実現して静電容量の変化をリアルタイムで表示したりもしました。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2021-12-18-15-09-19.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>スイッチを押下していくのに応じてグラフが変動します。キーボード以外にも使える汎用的なアプリです。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>単純にダイオードレス・ゴーストレスのスイッチマトリクススキャン方法としても面白いと個人的には思っています。</p>
+
+<h3 id="トラックパッドic評価用基板">トラックパッドIC評価用基板</h3>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://nogikes.booth.pm/items/2712507" target="_blank">
+                        <img src="https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/2712507/266e3f4d-207f-434c-8ced-94f66f66b58d_base_resized.jpg" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://nogikes.booth.pm/items/2712507" target="_blank">トラックパッドIC(MTCH6102/IQS572)評価用基板 - のぎけす屋 - BOOTH</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">**表面実装部品のはんだ付けが必要なキットです** - Toybox Keyboardの右上に搭載しているトラックパッドを搭載したマクロパッドです - トラックパッド付き自作キーボードの実験ができます - 2021/3からマルチタッチ基板の導入が簡単になるようにメイン基板を変更しています。(古い基板でもブレッドボードなどがあれば導入できます。詳細はビルドガイドを参照してください) ビルドガイド https://github.com/sekigon-gonnoc/tp1s6-doc (参考)Toybox keyboard</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>トラックパッドICを乗せたマクロパッドです。基本的にはそれぞれのIC(シングルタッチ版はmtch6102、マルチタッチ版はiqs572)のデータシートに従ってセンサ基板を作ったものです。</p>
+
+<p>シングルタッチ版のICでは”センサ電極の上に数mmのガラスやアクリルのオーバーレイを設置すること”となっていて、自分のためした範囲では液晶保護フィルムなどでは薄すぎて意図したとおりに動作しませんでした。そこで、センサ電極を基板裏面に配置して、基板（FR-4）をオーバーレイとして基板表面から操作するようにしました。<br />
+また、I2Cの信号と電源をスペーサー経由でメイン基板から供給しています。今にして思えば上から止めるねじをプラネジにして表面のスルーホールはレジストで覆っておいたほうがよかったかなと思います。</p>
+
+<p>入荷お知らせメールの登録が溜まっていますが手が回ってません。ごめんなさい。</p>
+
+<p>同じICを使ったキットとして魔王様が<a href="https://royal-keyboard-works.square.site/product/ToneScraper/14">ToneScraper</a>というキットを販売しています。こちらもどうぞ。</p>
+
+<h3 id="pro-micro-web-writer">Pro Micro Web Writer</h3>
+
+<p><a href="https://sekigon-gonnoc.github.io/promicro-web-updater/index.html">https://sekigon-gonnoc.github.io/promicro-web-updater/index.html</a></p>
+
+<p>昨年BLE Micro Pro Web Configuratorを作ってみて、ブラウザからマイコンと通信できるといろいろ楽しいことがわかったので作ってみました。</p>
+
+<p>Pro MicroのCaterinaブートローダと通信してWebブラウザからhexファイルを書き込めます。去年設計したGRS-70ECがEE_HANDSを使っているので左右識別のeepromデータを書き込むオプションも用意しました。</p>
+
+<p>名前の通りPro Microにしか対応しておらず、Caterinaブートローダが書き込まれていないElite-Cなどでは使用できません。DFUブートローダへの対応も検討してみましたが、Windowsではzadigでドライバを差し替える必要があってdfu-programmerと排他になってしまい、メリットが感じられなかったので中断しました。</p>
+
+<p>Remapにファームウェア書き込み機能が追加されてから順調にアクセス数が下がってきています。</p>
+
+<h3 id="keyboard-quantizer-utility">Keyboard Quantizer Utility</h3>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://github.com/sekigon-gonnoc/keyboard-quantizer-utility" target="_blank">
+                        <img src="https://opengraph.githubassets.com/c931d75bd9ebfd6c7f98b8b85dc75986020c3013f5619a065638d2e475094487/sekigon-gonnoc/keyboard-quantizer-utility" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://github.com/sekigon-gonnoc/keyboard-quantizer-utility" target="_blank">GitHub - sekigon-gonnoc/keyboard-quantizer-utility</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">Electron based task tray app to change default layer of keyboard quantizer or QMK enabled keyboard depends on active application. - sekigon-gonnoc/keyboard-quantizer-utility</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>Keyboard Quantizerを使ってマウスをカスタマイズしていると、アプリごとにキーマップを変更したくなるシチュエーションが増えてきました。キーボードであれば適当なキーにレイヤ切り替えを割り当てるところですが、マウスはボタンが少ないので簡単にはいきません。</p>
+
+<p>そこで作ってみたのがKeyboard Quantizer Utilityです。これはPC常駐型のアプリで、アクティブになっているウィンドウの名前に応じてキーボードにコマンドを送り、キーボードは受け取ったコマンドをもとにレイヤ切り替えなどの動作を実行できます。Quantizerの名前を冠していますが自作キーボード一般に適用できます。</p>
+
+<p>最初はこれもブラウザから実装できないかと思ったのですが、ブラウザからほかのプロセスを見ることはできないので独立したアプリになっています。アクティブウィンドウの検出には<a href="https://github.com/sindresorhus/active-win">active-win</a>というライブラリを使用しました。この記事を書くにあたりライブラリのページを見直してみたら、利用例として <a href="https://github.com/zigotica/active-app-qmk-layer-updater">active-app-qmk-layer-updater</a>というものが紹介されていました。考えることはみな同じですね。</p>
+
+<p>キーボード側にはRawHIDで受信したコマンドに応じた動作を実装する必要があります。このあたりの動作をまとめた<a href="https://github.com/mmalecki/qmk_rc/blob/latest/qmk_rc.c">qmk-rc</a> というライブラリもあるようです。中身をみてみると分かるように、受信したコマンドに応じてswitch文で動作を分岐するだけなので、なにか実現したい動作があれば簡単に追加できます。</p>
+
+<h3 id="keyboard-quantizer-b">Keyboard Quantizer B</h3>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://booth.pm/ja/items/3095820" target="_blank">
+                        <img src="https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/3095820/b128a222-aa94-41f6-8ad5-2252213e0fba_base_resized.jpg" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://booth.pm/ja/items/3095820" target="_blank">Keyboard Quantizer B - のぎけす屋 - BOOTH</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">** 使い方によってはファームウェア開発が必要になる場合があります ** ** 初期不良の場合を除き修理依頼は受け付けておりません ** Keyboard Quantizerの無線対応版です。 Keyboard Quantizer B はUSBキーボードのキー入力を別のキー入力に変換し、有線または無線で送信できるデバイスです。 PCのソフトウェアに依存しないので、このデバイスを間にかませることでどの環境でも自分が設定したキー配列で入力できます。 そのため、どのPCでもCAPS LOCKをCtrlキーとして使えるようにしたり、お気に入りの配列で入力できるようになります。</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>QuantizerがPro Microを乗せる形だったころにBLE Micro Proを利用した無線化の検討は完了していたので、Keyboard Quantizer Bは低消費電力の実現を目標にしました。</p>
+
+<p>メインマイコンの消費電力はもともと低かったのでホスト用マイコンの消費電力をいかに減らすかということに苦心し、クロックを落としたりスリープを挟んだりして低消費電力を実現しました。一方で、消費電力が低すぎるとモバイルバッテリなどに接続したときにしばらくするとバッテリの電源がオフになっていまうという問題があったので、わざと電力を消費するためのダミー抵抗の制御を追加しています。</p>
+
+<h3 id="keyboard-quantizer-rev4">Keyboard Quantizer (rev.4)</h3>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://shop.yushakobo.jp/products/keyboard-quantizer" target="_blank">
+                        <img src="http://shop.yushakobo.jp/cdn/shop/products/rev3_rear.jpg?v=1612407455" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://shop.yushakobo.jp/products/keyboard-quantizer" target="_blank">Keyboard Quantizer - rev4 (未組立版)</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">Keyboard Quantizerは一般的なUSBキーボードを自作キーボード用のファームウェアの定番であるQMKに対応させるためのボードです。キー配列を自由に変えられるだけでなく、キーボードにレイヤ、マクロ、コンビネーションなどの機能を追加できるようになります。</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>RP2040搭載のKeyboard Quantizerです。開発中はrev.4ではなくRPというリビジョン名でしたが、有線版の正統な進化系ということでrev.4になりました。</p>
+
+<p>発売としてはKeyboard Quantizer Bより後でしたが、実際の開発はこちらが先行していました。atmega32u4が品薄気味になってきていたのでファームウェアもないのに見切り発車で設計しました。初期の設計ではWS2812を搭載していましたが、目に煩かったのでQuantizer Bと同じく単色LEDx2の構成に落ち着きました。</p>
+
+<p>RP2040のQMK対応はこのためにやりました。</p>
+
+<h3 id="rp2040のqmk対応">RP2040のQMK対応</h3>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://scrapbox.io/self-made-kbds-ja/RP2040%E5%AF%BE%E5%BF%9C%E3%81%AEQMK(%E9%9D%9E%E5%85%AC%E5%BC%8F)%E3%82%92%E5%8B%95%E3%81%8B%E3%81%99" target="_blank">
+                        <img src="https://scrapbox.io/assets/img/content-logo.png" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://scrapbox.io/self-made-kbds-ja/RP2040%E5%AF%BE%E5%BF%9C%E3%81%AEQMK(%E9%9D%9E%E5%85%AC%E5%BC%8F)%E3%82%92%E5%8B%95%E3%81%8B%E3%81%99" target="_blank">RP2040対応のQMK(非公式)を動かす - Self-Made Keyboards in  Japan</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">QMK公式のRP2040対応（ChibiOSのRP2040対応）が待てないのでChibiOSを経由せず直接pico-sdkを使う実装でQMKが動くようにしてみましたsekigon-gonnoc https://github.com/sekigon-gonnoc/qmk_firmware/tree/rp2040 SPLIT, VIA, LED, OLED, MIDI などの機能には対応しています。対</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>新しいマイコンでQMKが動くようにするのは（マイコン側のライブラリが充実していれば）意外と簡単です。</p>
+
+<p>最低限の動作でいいのであればUSB出力、タイマ、GPIOをQMKの関数/マクロに合わせてラッピングして、makefileをちょっといじると一体型のキーボードとして動くようになります。<br />
+さらに分割型として動作させるにはserial系の関数を、via対応するにはeepromエミュレーションを、LEDを光らせるにはws2812のドライバを、OLEDに表示するにはi2cのドライバを、、、とそれぞれ実装していくことになります。</p>
+
+<p>このファームウェアは拙作のKeyboard Quantizer(rev.4)だけでなく3arahtさんの<a href="https://3araht.booth.pm/items/3379141">giabalanaipico</a>や<a href="https://3araht.booth.pm/items/3421229">chromatoneminipico</a>などにも採用されており、十分使えるものになっていると思います。</p>
+
+<h3 id="pico-micro">Pico Micro</h3>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://nogikes.booth.pm/items/3214808" target="_blank">
+                        <img src="https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/3214808/9e9b79be-7df8-490d-a991-43f7ce1b2ed7_base_resized.jpg" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://nogikes.booth.pm/items/3214808" target="_blank">PICO Micro(プロト版) - のぎけす屋 - BOOTH</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">** 使い方についてのサポートはできません ** Pro Microと互換性のあるフットプリントを採用したRP2040のブレークアウト基板です。USBコネクタにはミッドマウントのUSB Type-Cレセプタクルを採用し、基板の高さを抑えています。 RP2040はRaspberry Pi財団が開発したマイコンで、ARM Cortex-M0+のデュアルコア(133MHz)を搭載し、264kBのSRAM, I2C, UART, SPI, ADC, PIO, USBといった機能が利用できます。 https://github.com/sekigon-gonnoc/pico-micro</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>せっかくQMKが動くようになったので他の自作キーボードにも載せたいとなると、手っ取り早いのはPro Microの差し替えです。</p>
+
+<p>Pro MicroサイズのRP2040基板は各社から販売されていますが、Pro Microを裏返して実装することも多い自作キーボードを前提に考えるといずれも</p>
+
+<ol>
+  <li>USBコネクタの背が高く2.5mmコンスルーを使って裏返しの状態で差し込むと浮いてしまう</li>
+  <li>ブートローダを起動するためのボタンが表面にあって裏返すとアクセスできない</li>
+</ol>
+
+<p>という問題がありました。</p>
+
+<p>この問題を解決するために設計したのがPico Microです。ミッドマウントのコネクタを採用して高さを抑え、BOOTピンをスルーホールにすることで裏返しの状態でもアクセスできるようにしています。ピン配置はsparkfun pro micro RP2040と互換性を持たせています。</p>
+
+<p>RP2040向けQMKではビルド時にオプションをつけることでPro Micro用のファームウェアをPico Micro向けに変換できるようにして、大抵の場合はファームウェアを編集することなく簡単に置き換えができます。</p>
+
+<h3 id="rp2040を直接実装するキーボードについて">RP2040を直接実装するキーボードについて</h3>
+
+<p>RP2040を直接実装する基板を2種類設計した経験をもとに、キーボードに直接実装する場合のatmega32u4とRP2040の差について比較してみます。<br />
+RP2040のハードウェアデザインについては公式のドキュメントを参考にしてください。</p>
+
+<p><a href="https://datasheets.raspberrypi.org/rp2040/hardware-design-with-rp2040.pdf">https://datasheets.raspberrypi.org/rp2040/hardware-design-with-rp2040.pdf</a></p>
+
+<p>RP2040(raspberry pi pico)のスペックとatmega32u4を比較してみるとまず目を引くのはROM容量の大きさです。RP2040のROMは外付けなので公平な比較ではありませんが、ラインナップとしては小容量の部類である2MB ROMでも数十円程度で入手できますし、それ以上の大きさ（~128MB）にすることもできます。例えばKeyboard Quantizerのデフォルトのファームウェアのサイズが68KBであることを考えると、キーボード向けとしてはかなり大きいと言えるのではないでしょうか。QMKのオプションをたくさん付けても使いきれなさそうです。</p>
+
+<p>GPIOの本数も30本とatmega32u4の26本より若干多く、40%程度の分割キーボードであればピン直結で設計することもできます。<br />
+処理能力も高く、OLEDなどのオプションをつけない場合のマトリクススキャン周波数は数十kHzに達します。マルチコアやPIOを活用することで時間にシビアな機能にも対応可能です。<br />
+ブートローダは書き換え不可領域にあるため、うっかり文鎮化する危険もありません。ただし、ブートローダを起動するのに操作するピンがResetピンとBootピンの2つあるので、その点は注意が必要です。</p>
+
+<p>一方、設計時には外付け部品の多さがネックになるかもしれません。</p>
+
+<p>先ほどメリットの1つにROMの大きさを挙げましたが、RP2040はユーザーが書き換えられるROMを内蔵しておらず<strong>外付けROMが必須</strong>です。このROMは（キーボードにおいては）それなりに高い60MHzの信号で動作するので信号線の配線にも気を使う必要があります。マイコンとROMをできるだけ近くに置く必要があるので、部品の配置にも制約が出そうです。</p>
+
+<p>また、3.3V動作なのでVBUSからの降圧回路が必要だったり、電源まわりのパスコンの推奨数もそれなりにあります。atmega32u4と同様に外付けクロックも必要です。sparkfun pro micro RP2040などの画像を見ると普通のpro microに比べて実装密度が高いことが分かると思います。</p>
+
+<p>パッケージもQFNのみなので手半田の難易度が高く、試作のハードルも多少あがります。</p>
+
+<p>とはいえ、一度わかってしまえば設計する上でのatmega32u4との差は大してありません。<br />
+自分の作りたいキーボードの要件に応じて使い分ければいいと思いますが、楽しいので一度作ってみると良いのではないでしょうか。</p>
+
+<h3 id="アニメーションの再生">アニメーションの再生</h3>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">キーボードにディスプレイがついてると嬉しいことの例：Bad Appleが再生できる <a href="https://t.co/YpFxfCsCdX">pic.twitter.com/YpFxfCsCdX</a></p>&mdash; せきごん (@_gonnoc) <a href="https://twitter.com/_gonnoc/status/1459541487708893185?ref_src=twsrc%5Etfw">November 13, 2021</a></blockquote>
+
+<p>Pico Microには最低2MBのROMを搭載することにしていますが、QMKで使用する容量はわずか2%程度に過ぎません。せっかくなので余っている容量を活用したいところです。</p>
+
+<p>そこで試してみたのがOLED上でのアニメーションの再生です。電子工作オタクがディスプレイを動かせるようになると再生したがる事で有名なBad Apple!!のPVを再生してみました。<br />
+このPVはもともと白黒の影絵なのでデータ量が小さく済みます。とはいっても、何かしらの動画コーデックを使うのではなく全フレームの画像をそのまま格納しているので、32x24@30fpsのフル尺だと612KBになりました。</p>
+
+<p>これでようやくROMの1/3を使えました。まだ2/3も残っているのでいろいろ遊べそうです。</p>
+
+<p>再生用データを含めたファームウェアは配布できないので、動画からデータを生成するためのスクリプトと再生用の関数を置いておきます。</p>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://gist.github.com/sekigon-gonnoc/817fc00e9c54e4aaf92002cca65187c7" target="_blank">
+                        <img src="https://github.githubassets.com/assets/gist-og-image-54fd7dc0713e.png" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://gist.github.com/sekigon-gonnoc/817fc00e9c54e4aaf92002cca65187c7" target="_blank">Bad Apple!! on OLED</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">Bad Apple!! on OLED. GitHub Gist: instantly share code, notes, and snippets.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3 id="pico-pio-usb">Pico-PIO-USB</h3>
+
+<p>まずはこの動画をご覧ください。</p>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">RP2040（ラズパイPicoのマイコン）のPIOを活用してUSBホストを実装しました。元々持ってるUSB機能と合わせてホストとデバイスの両方の機能を持たせられます。動画は分割型自作キーボードの左右間通信をUSB化＋αのデモです。詳細はこの後のアドカレにて <a href="https://twitter.com/hashtag/%E8%87%AA%E4%BD%9C%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89?src=hash&amp;ref_src=twsrc%5Etfw">#自作キーボード</a> <a href="https://twitter.com/hashtag/raspberrypipico?src=hash&amp;ref_src=twsrc%5Etfw">#raspberrypipico</a> <a href="https://twitter.com/hashtag/raspberrypy?src=hash&amp;ref_src=twsrc%5Etfw">#raspberrypy</a> <a href="https://t.co/Og7HSsygvh">pic.twitter.com/Og7HSsygvh</a></p>&mdash; せきごん (@_gonnoc) <a href="https://twitter.com/_gonnoc/status/1472216681573658632?ref_src=twsrc%5Etfw">December 18, 2021</a></blockquote>
+
+<p>分割型の自作キーボードではTRRS/TRSケーブルを使って通信する構成が大半を占めています。この構成に対して、本来交流のオーディオ信号のための経路に直流電圧やシリアル通信を流すのは問題がある、という指摘があります。私自身はそもそもケーブルいらない派なのですが、うっかり他のデバイスを接続してしまっても問題が起きない構成、というのは興味深い課題です。</p>
+
+<p>市販の分割型キーボードがどうなっているのか調べてみると、最近発売されたMistel BAROCCO MD770では右側のキーボードがホスト用とデバイス用の2つのUSB-Cポートを備えています。左側キーボードのポートと右側キーボードのホスト用ポートをUSB-Cケーブルで接続して通信しているようです。RP2040のUSBはホスト機能にも対応していますが、今回の場合だとUSBはすでにPCへの接続に使ってしまっています。自作キーボードにUSBホスト機能を実装する、というとKeyboard Quantizerが思い浮かびますが、QuantizerではUSBホスト用のICをメインのマイコンとは別に実装しています。分割キーボードの左右間通信のためだけにICを1個追加するというのは割りに合わない気がします。左右のどちらも親機として動くようにしようとしたら両方にICを載せる必要がありますし、その場合、子機側のICは全く利用されません。MD770が片方しか親機になれないのはこういった事情もあるかもしれません。</p>
+
+<p>そこで注目したのがRP2040のPIO(Programmable IO)機能です。PIO機能ではCPUと独立に動作するシンプルなステートマシンを利用してIOを操作します。これによりCPUだけでは実現できない信号を安定したタイミングで生成できます。PIOを利用してUSBの信号を生成した例はまだ見当たらなかったので、自分で実装してみました。</p>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://github.com/sekigon-gonnoc/Pico-PIO-USB" target="_blank">
+                        <img src="https://opengraph.githubassets.com/914d2e2a582a21a6ef0180288aae3ad0276e94086e28e7457fa1f9d8e70ed540/sekigon-gonnoc/Pico-PIO-USB" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://github.com/sekigon-gonnoc/Pico-PIO-USB" target="_blank">GitHub - sekigon-gonnoc/Pico-PIO-USB</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">USB host/device implementation using PIO of raspberry pi pico (RP2040). - sekigon-gonnoc/Pico-PIO-USB</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>このライブラリはUSB Full-speedのホスト機能（Low-speedには未対応）をPIOを利用して実現しています。ハードウェア的にはコネクタ以外に必須の部品はありませんが、D+/D-に直列抵抗（22Ω）を入れたほうが良いです。USBの規格的には15kΩのプルダウン抵抗も必要ですがRP2040の内部プルアップ抵抗（80kΩ）で十分動作します。</p>
+
+<p>マイコンのリソースとしては全体でROM 10KB, RAMも10KBくらい使用します。RP2040のメモリ容量に比べると十分小さいです。D+/D-としては2つの連続したGPIOピンを選んで使用できます。PIOは2つ必要で、受信用に1個のPIOのプログラムメモリを専有します。送信用のPIOでは22ステップ分のプログラムメモリと1個のステートマシンを利用します。ws2812用信号の生成部くらいなら共存できそうです。<br />
+実行時間としては、1msごとに送受信用のハンドラが起動し、送信完了待ち・受信完了待ちの数us~数百usの間CPUを占有します。そのため、サンプルではほかのプログラムの影響を受けない/与えないようにCore1にこれらの処理を割り当てています。</p>
+
+<p>このライブラリを利用してQMKのRawHID(≒VIA)により双方向の左右間通信を実現しました。RawHIDにはマトリクス状態取得コマンドが用意されていて、VIA/REMAPのマトリクス確認機能に利用されています。通信間隔は1コマンド（=64byte）/1msで実用上十分な速度でマトリクスの状態が取得できます。RawHIDのコマンドは<code class="language-plaintext highlighter-rouge">raw_hid_receive_kb</code>に自分で追加できるので、マトリクスの状態だけでなくエンコーダなどの情報が必要になったらこれらの混合コマンドを用意することで実現できます。双方向の通信なのでLEDの同期なども簡単に実現できそうです。</p>
+
+<p>開発にあたって苦労したのはソフトウェアのチューニングです。信号自体はPIOを使うことで安定して送受信できるのですが、プロトコルを実現するソフトウェアのタイミングも意外とシビアで大変でした。上で説明したようにRP2040にはプログラム用ROMが内蔵されておらず、適宜外付けのROMから読み込んでいます。キャッシュに乗っていれば素早く実行されるのですが、なにも制御しないと実行時間が安定せずプロトコルが成立しませんでした。最終的にはUSBの動作に関する部分はすべてRAMに読み込んでから実行するように指定することで実行時間が安定し、所望の動作が実現できました。コンパイラの最適化は最高レベルが必須で、ちょっとした書き方の差により動作が左右される部分もありました。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2021-12-18-15-24-59.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>D+/D-をロジックアナライザで観察した結果。1msごとに通信しているのが分かります。RP2040の処理性能をもってすればこのくらいの占有率の処理ならQMKのメイン処理と同じコアに入れても問題なく動作しそうです。サンプルプログラムではマルチコアの検討もかねて念のためCore1に割り振っています。</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2021-12-18-15-26-00.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1周期分の通信を拡大してみた結果。DATA0とラベルされているのがホストからデバイスへのコマンドで、DATA1が前の周期のコマンドに対するデバイスからホストへの応答を示しています。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>先ほどの動画に出てきたPico-Pico-USBはこの機能の検証用に作ったmeishiサイズのキーボードです。ホスト用のUSB-CポートはPico MicroのGPIOに繋がっています。1つのキーボードに同じ形状のポートが2つ存在するとそれはそれで差し間違いのリスクが生じそうですが、差し間違えたとしても動作しないだけで破損のリスクはないので良しとしましょう。<br />
+本当はRP2040を直接実装した基板にしたかったのですが今日の記事に間に合わないのでPico Micro/Pro Micro RP2040を実装する形になりました。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2021-12-18-15-31-54.png" alt="" /></th>
+      <th><img src="/assets/images/2021-12-18-15-30-15.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>回路図。念のためD+/D-のプルダウン抵抗と直列抵抗を入れられるようになっています。無くても動きます。</td>
+      <td>Pico-Pico-USBのPCB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>サンプルプログラムとしてはQMKのsplitを利用したシンプルな実装と、splitを利用せずcustom_matrixの中で通信結果を利用する発展形の2つ用意しました。</p>
+
+<p><a href="https://github.com/sekigon-gonnoc/qmk_firmware/tree/rp2040/keyboards/pico_pico_usb">https://github.com/sekigon-gonnoc/qmk_firmware/tree/rp2040/keyboards/pico_pico_usb</a></p>
+
+<p>左右それぞれのキーボードからするとどちらもホストに接続された状態になっているので動作に違いはありません。どちらのキーボードもホスト用ポートから受信したマトリクスの状態を自分のマトリクスに追加して自分のホストに送信します。QMKのsplitを利用する場合はcustom_transportを実装してデータを処理しています。custom_transportのうち実装が必要なのは<a href="https://github.com/sekigon-gonnoc/qmk_firmware/tree/rp2040/keyboards/pico_pico_usb/simple_split/simple_split.c#L81">transport_mastser</a>だけです。下流側のデバイスに対してVIAのマトリクス取得コマンドを発行し、受け取った結果をslave_matrixに反映させます。下流側のデバイスではVIAが有効になっていればそのままよしなに通信してくれるので、<code class="language-plaintext highlighter-rouge">transport_slave</code>は不要です。</p>
+
+<p>各キーボードは自分の下流側のデバイスから受け取ったデータと自分のデータを統合して上流に流すので、3台以上のキーボードを接続することもできます。ただし、QMKのsplit機能は2分割を前提としていて3台以上の構成に対応できません。この場合はsplitではなくcustom_matrixを利用する必要があります。とはいっても通信部分はPico-PIO-USBとQMKのRaw HIDが利用できるので、意外とシンプルに実装できます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2021-12-18-23-08-00.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3台以上繋いだ時のデータの流れ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>マウスなどのデバイスを接続して連動させることも（通信できる条件を満たしていれば）可能です。デモの動画では手元の無線トラックボールがLow-Speedデバイスだったため、Keyboard Quantizerを噛ませてFull-Speedに変換して認識させています。</p>
+
+<p>自分が用意したUSBケーブルの中で最長のものが1.8mで、この長さでも問題なく通信できています。<br />
+本来のUSBでは受信部のハードウェアが差動レシーバになっていて、ケーブルが伸びても安定した通信ができるようになっています。しかし、pico-pio-usbでは差動レシーバが存在しないためD+だけを使ってデータを受信しています。そのため、あまりに長いケーブルだと通信が成立しなくなる可能性はありますが、少なくとも1.8mのケーブルでも通信できるのであれば左右間通信用としては実用上十分ではないでしょうか。QKMの独自のシリアル通信プロトコルに比べるとUSBのほうが通信エラーチェックや再送の仕組みも充実しているので、その点でも安心です。</p>
+
+<p>いまのところホスト機能にしか対応していないので、PIO-USBで追加したポートに対して通常のUSBポートを接続する構成しか実現できません。ケーブルの取り回しを考えるとポートの配置に制約ができてしまうので、デバイス機能にも対応させてPIO-USB同士での通信にも対応させたいです。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2021-12-18-23-19-00.png" alt="" /></th>
+      <th><img src="/assets/images/2021-12-18-23-24-00.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>上側にポートが集中しているデザイン</td>
+      <td>違う辺の上にポートを配置した場合</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>そのほか、USBハブやUSB Low-speedへの対応にも挑戦してみようと思っています。</p>
+
+<p>おまけは以上です。</p>
+
+    <div id="share-bar" style="margin-top: 10px; margin-bottom: 10px;">
+    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button"
+        data-show-count="false">Tweet</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button"
+        data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja"
+        title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png"
+            alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8"
+        async="async"></script>
+</div>
+  </div><a class="u-url" href="/2021/12/19/keyboard-advent-calender.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>年に一回のアドベントカレンダー投稿を置く場所</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a href="https://github.com/sekigon-gonnoc"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">sekigon-gonnoc</span></a></li><li><a href="https://www.twitter.com/_gonnoc"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">_gonnoc</span></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+
+</body>
+
+</html>

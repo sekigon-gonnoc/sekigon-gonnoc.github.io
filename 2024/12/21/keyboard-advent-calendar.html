@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>キーボード自動設計ツールを作っている話と、2024年の振り返り | 年に一回のアドベントカレンダー投稿を置く場所</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="キーボード自動設計ツールを作っている話と、2024年の振り返り" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="いま作っているキーボード自動設計ツールの概要説明と、今年作ったものを振り返ります" />
+<meta property="og:description" content="いま作っているキーボード自動設計ツールの概要説明と、今年作ったものを振り返ります" />
+<link rel="canonical" href="/2024/12/21/keyboard-advent-calendar.html" />
+<meta property="og:url" content="/2024/12/21/keyboard-advent-calendar.html" />
+<meta property="og:site_name" content="年に一回のアドベントカレンダー投稿を置く場所" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-12-21T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="キーボード自動設計ツールを作っている話と、2024年の振り返り" />
+<meta name="twitter:site" content="@_gonnoc" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","headline":"キーボード自動設計ツールを作っている話と、2024年の振り返り","dateModified":"2024-12-21T00:00:00+00:00","datePublished":"2024-12-21T00:00:00+00:00","mainEntityOfPage":{"@type":"WebPage","@id":"/2024/12/21/keyboard-advent-calendar.html"},"description":"いま作っているキーボード自動設計ツールの概要説明と、今年作ったものを振り返ります","url":"/2024/12/21/keyboard-advent-calendar.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="年に一回のアドベントカレンダー投稿を置く場所" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">年に一回のアドベントカレンダー投稿を置く場所</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">キーボード自動設計ツールを作っている話と、2024年の振り返り</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2024-12-21T00:00:00+00:00" itemprop="datePublished">
+        Dec 21, 2024
+      </time></p>
+      <link rel="stylesheet" href="/assets/css/linkpreview.css">
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <div id="share-bar" style="margin-top: 10px; margin-bottom: 10px;">
+    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button"
+        data-show-count="false">Tweet</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button"
+        data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja"
+        title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png"
+            alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8"
+        async="async"></script>
+</div>
+    <p><a href="https://adventar.org/calendars/10025">キーボード #1 Advent Calender 2024</a> 21日目担当のせきごんです。BLE Micro Proなど<a href="https://nogikes.booth.pm/">キーボード関連のモジュールを色々</a>作っています。</p>
+
+<p>今年作ったもの(作っているもの)を振り返っていきます。</p>
+
+<ul id="markdown-toc">
+  <li><a href="#auto-kdk" id="markdown-toc-auto-kdk">auto-kdk</a>    <ul>
+      <li><a href="#概要" id="markdown-toc-概要">概要</a></li>
+      <li><a href="#説明" id="markdown-toc-説明">説明</a></li>
+    </ul>
+  </li>
+  <li><a href="#via-custom-ui-for-vial" id="markdown-toc-via-custom-ui-for-vial">VIA Custom UI for Vial</a>    <ul>
+      <li><a href="#特徴" id="markdown-toc-特徴">特徴</a></li>
+      <li><a href="#背景経緯など" id="markdown-toc-背景経緯など">背景・経緯など</a></li>
+    </ul>
+  </li>
+  <li><a href="#gtrk67" id="markdown-toc-gtrk67">GTRK67</a></li>
+  <li><a href="#torabo-tsuki" id="markdown-toc-torabo-tsuki">torabo-tsuki</a></li>
+  <li><a href="#自作ローラーマウス" id="markdown-toc-自作ローラーマウス">自作ローラーマウス</a></li>
+  <li><a href="#12mmトラックボールモジュール" id="markdown-toc-12mmトラックボールモジュール">12mmトラックボールモジュール</a></li>
+  <li><a href="#来年のこと" id="markdown-toc-来年のこと">来年のこと</a></li>
+</ul>
+
+<h2 id="auto-kdk">auto-kdk</h2>
+
+<h3 id="概要">概要</h3>
+
+<p>最近は<a href="https://sekigon-gonnoc.github.io/auto-kdk">Auto-Keyboard-Design-Kit</a>なるものを作っています。その名の通り自動でキーボードを設計してくれるツールとコントローラーボードです。キー配置を指定すると基板・ケース・ファームウェア（の設定）を自動で設計してくれます。</p>
+
+<p>現在はファイル出力機能をオフにしたデモ版を公開しています。いくつかの修正が完了し、何パターンかの試作とコントローラーボードの頒布準備が整ったらファイル出力機能も有効にします。</p>
+
+<h3 id="説明">説明</h3>
+
+<p>auto-kdkを使ったキーボードの設計フローを説明します。</p>
+
+<p>分割か一体型か、スイッチはMXかChocV2(19mm/17mmピッチ)を選択したあと、マトリクスのサイズとどのスイッチを使うかを選択します。 auto-kdk用のコントローラーボードは18本のIOを持っていて、現時点では最大のマトリクスサイズは5x13または6x12です。<br />
+マトリクスの形を決定したら、それぞれのキーの位置・サイズとコントローラボードの位置を設定します。必ず配線できるわけではなく、マトリクスとコントローラの位置関係によっては失敗することもあります。その場合は位置を調整するか、後ほど基板CADに読み込んでからに修正することになります。<br />
+下の図では、左側が位置の設定前、右側が位置の設定後の例です。</p>
+
+<p><img src="/assets/images/2024-12-20-23-50-58.png" alt="" /><br />
+<br /></p>
+
+<p>レイアウトを決定すると基板のデータが自動で生成されます。Live updateを有効にするとレイアウトの変更がリアルタイムで反映されます。基板の外形やコントローラーボードのピンの干渉がないことなどを確認したら、<code class="language-plaintext highlighter-rouge">Start routing</code>ボタンを押すと自動で配線されます。多少重い計算なので、PCやブラウザによっては時間がかかります。自分の環境だとfirefoxよりchromeのほうが速かったです。<br />
+下の図では、左側が配線前、右側が配線後の状態です。</p>
+
+<p><img src="/assets/images/2024-12-20-23-52-18.png" alt="" /><br />
+<br /></p>
+
+<p>さらに下に移動するとケースのデータも生成されています。これもLive updateが有効の場合はレイアウトの変更がリアルタイムで反映されます。ケースは2ピース構造で、3Dプリントサービスで製造することを想定しています。<br />
+今回は無線用のコントローラーボードを使う前提のため、ボトムケースにはUSB用の穴のほかに電源スイッチやバッテリー用のスペースが空いています。ChocV2スイッチを使う場合はキーキャップとトッププレートの干渉除けにスイッチをかさ上げする突起がトッププレートに付きます。</p>
+
+<p><img src="/assets/images/2024-12-20-23-55-32.png" alt="" /><br />
+<img src="/assets/images/2024-12-20-23-57-12.png" alt="" /></p>
+
+<p>ケースのチルト角やベゼルの太さも変更できるようになっています。</p>
+
+<p><img src="/assets/images/2024-12-20-23-59-32.png" alt="" /></p>
+
+<p>ケースの微妙な凹みが気になったりする場合は、レイアウト画面で<code class="language-plaintext highlighter-rouge">padding</code>モジュールを追加することである程度は外形を制御できます。</p>
+
+<p><img src="/assets/images/2024-12-21-00-04-27.png" alt="" /><br />
+<img src="/assets/images/2024-12-21-00-04-56.png" alt="" /></p>
+
+<p>トラックボールやエンコーダを付けたい場合もレイアウト画面から拡張モジュールを追加します。この辺りはまだ拡張モジュールの詳細が決まっていないので、形などは変わっていくと思います。現時点で決まっていることとして、拡張モジュールはコントローラボードとフレキシブルケーブルで直結するようになっていて、メイン基板の配線には影響しません。ただし、無線版のコントローラボードはピン数の都合でマトリクス用の一部IOと拡張用IOが共用になっており、拡張モジュールを使用する場合はマトリクスの最大サイズが小さくなります。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2024-12-21-00-39-31.png" alt="" /></th>
+      <th><img src="/assets/images/2024-12-21-00-40-14.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>レイアウトでボール位置を指定</td>
+      <td>ケースにモジュール取付用の穴が開く</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>編集が完了したらGenerateボタン(2024/12/21時点では非表示)をクリックすると、基板(json)・ケース(STL)・ファームウェア用設定ファイル類がzipファイルとしてダウンロードできます。</p>
+
+<p>基板データはEasyEDA(STD)で読み込みます。EasyEDA(Pro)にインポートすることもできます。</p>
+
+<p><img src="/assets/images/2024-12-21-00-08-59.png" alt="" /></p>
+
+<p>配線にティアドロップを付けたい場合はEasyEDAの機能で1クリックで付けられます。<br />
+EsyEDAはJLCPCBと連携しているため、そのまま基板を発注できます。ソケットをJLCPCBに預けている人はPCBAまで頼めます。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2024-12-21-00-10-53.png" alt="" /></th>
+      <th><img src="/assets/images/2024-12-21-00-10-25.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ティアドロップ</td>
+      <td>JLCPCBで製造</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>こんな感じでJLCPCBに基板とケースを頼んでみた結果がこちらです。<br />
+コントローラーボードとメイン基板は1.27mmピッチのコンスルーで接続予定なのですが、手配が間に合わなかったので完全な動作確認まではできていません。メイン基板側は単純なマトリクスなので問題なく動くと考えています。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th><img src="/assets/images/2024-12-21-00-19-23.png" alt="" /></th>
+      <th><img src="/assets/images/2024-12-21-00-19-09.png" alt="" /></th>
+      <th><img src="/assets/images/2024-12-21-00-20-20.png" alt="" /></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>上から</td>
+      <td>横から</td>
+      <td>メイン基板</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>今後のマイルストーンとしては</p>
+
+<ul>
+  <li>右手用コントローラボード(無線版)の設計</li>
+  <li>MX以外にChocV2(19mm/17mmピッチ)での動作確認</li>
+  <li>設計アプリのファイル出力機能の有効化</li>
+  <li>コントローラボード(無線版)の頒布</li>
+  <li>有線版コントローラボードの設計、設計アプリ側の対応</li>
+  <li>トラックボールモジュールの設計</li>
+</ul>
+
+<p>などを考えています。キーケットまでにはコントローラボードの頒布を間に合わせたいです。<br />
+ケース周りはあまり知見がないので、デモサイトを操作して思うところのある人がいたらご連絡ください。</p>
+
+<h2 id="via-custom-ui-for-vial">VIA Custom UI for Vial</h2>
+
+<p><a href="https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/">VIA Custom UI for Vial</a>は<a href="https://get.vial.today/">Vial</a>をベースに拡張したWebアプリです。<br />
+Vialと互換の機能に加えて、いくつかの拡張機能や特徴があります。ときどき勘違いされますがBMP専用ではありません。Vial対応しているキーボードならマイコンによらず使えます(protocol 6)。</p>
+
+<p><img src="/assets/images/2024-12-20-16-38-55.png" alt="" /></p>
+
+<h3 id="特徴">特徴</h3>
+
+<ul>
+  <li>起動が速い
+    <ul>
+      <li>キーボードを選択してからキーマップが表示されるまでの時間がVialより短いです</li>
+    </ul>
+  </li>
+  <li>Remapを参考にしたキー設定方法
+    <ul>
+      <li>Remapを参考に、ポップアップとドラッグアンドドロップでキー設定を変更します</li>
+    </ul>
+  </li>
+  <li>vial.jsonにカスタムUIを設定可能
+    <ul>
+      <li>VIAのようなカスタムUI機能を使用できます</li>
+    </ul>
+  </li>
+  <li>ファイル保存/読込機能
+    <ul>
+      <li>ブラウザ版でもキーマップ設定をjsonファイルに書き出せます(注:Vialの.vilファイルとの互換性はありません)</li>
+    </ul>
+  </li>
+  <li>BLE経由の書き換え機能
+    <ul>
+      <li>BLE Micro ProではBLE経由でもキーマップや設定が変更できます</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="背景経緯など">背景・経緯など</h3>
+
+<p>QMK Firmwareをベースにしたキーボードのキーマップを書き換えるためのアプリとして、VIA, Remap, Vialがあります。</p>
+
+<p>まずVialについて簡単に説明すると、Remapのようにキーマップを書き換える機能に加えて、コンボやタップダンス、タップ設定などの機能も持っているアプリです。<br />
+キーボードに書き込むファームウェアはQMK Firmwareのフォークで、キーボード側にキーレイアウトの情報を持たせるため、アプリ側に情報を登録しなくてもキーボードを認識してくれます。<br />
+ブラウザからも利用できますし、ローカル用のアプリも用意されています。<br />
+BLE Micro Proのファームウェアは<a href="/2023/12/09/keyboard-advent-calendar.html#vial対応ble-micro-pro">昨年Vialをベースとしたものに移行した</a>ため、v1以降のファームウェアを書き込むとどのキーボードでもVialが使えます。もちろん、以前のようにRemap（0.19以降用）を使うこともできます。</p>
+
+<p>一方、VIA/Remapはいずれも本家のQMK Firmwareの機能を利用しています。事前にjsonファイルをアプリ側に登録する必要があり、日本の自作キーボードキットでは登録時のレビューの早さに定評がありRemapが主流の印象です。<br />
+そんなわけで日本のキットでは見かけないVIAですが、VIA独自の機能として<a href="https://www.caniusevia.com/docs/custom_ui">Custom UI</a>という機能があります。設定ファイルにメニューを定義しておくことで独自のメニューをアプリ上に表示する機能です。<br />
+ファームウェア側に対応するデータの送受信部を実装しておくことでキーマップ以外の設定もGUIから変更できるようになります。<br />
+Custom UI機能はアプリ側のGUI設定にあわせてファーム側の変更も必要ということを踏まえるとVialとの相性が良さそうですが、残念ながらVialには実装されていません(2024年12月時点)。</p>
+
+<p>そこで、Custom UI機能をVial向けに移植してみたのが<a href="https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/">VIA Custom UI for Vial</a>です。<br />
+最初に作った時はCustom UI機能だけサポートするつもりだったのでこの名前になりました。</p>
+
+<p>たとえばvial.jsonに下記のように追記すると、Trackballというメニューが表示され、分解能を選択するためのドロップダウンリストが表示されます。</p>
+
+<details>
+  <summary>vial.json設定例</summary>
+
+  <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"menus"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Trackball"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cursor"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CPI"</span><span class="p">,</span><span class="w">
+              </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dropdown"</span><span class="p">,</span><span class="w">
+              </span><span class="nl">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="s2">"id_trackball_cpi"</span><span class="p">,</span><span class="w">
+                </span><span class="mi">0</span><span class="p">,</span><span class="w">
+                </span><span class="mi">1</span><span class="w">
+              </span><span class="p">],</span><span class="w">
+              </span><span class="nl">"options"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="s2">"200"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"400"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"600"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"800"</span><span class="w">
+              </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
+
+  <p>id_trackball_cpiから2つ目の数字、1がidの数値です。</p>
+
+</details>
+
+<p><br /></p>
+
+<p>keymap.cにはデータ受信時の処理を記載します。</p>
+
+<details>
+  <summary>keymap.cの例</summary>
+
+  <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">raw_hid_receive_kb</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">length</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">command_id</span> <span class="o">=</span> <span class="o">&amp;</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+
+    <span class="c1">// Due to an older version of via.c in Vial that does not support</span>
+    <span class="c1">// id_custom_set/get_value, we use id_handled to invoke via_custom_value_command_kb.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">command_id</span> <span class="o">==</span> <span class="n">id_unhandled</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">via_custom_value_command_kb</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">via_custom_value_command_kb</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">length</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// data = [ command_id, channel_id, value_id, value_data ]</span>
+    <span class="kt">uint8_t</span> <span class="n">command_id</span>  <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="kt">uint8_t</span> <span class="n">channel_id</span>  <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+    <span class="kt">uint8_t</span> <span class="n">value_id</span>    <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">value_data</span> <span class="o">=</span> <span class="o">&amp;</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">command_id</span> <span class="o">==</span> <span class="n">id_custom_get_value</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// キーボードの指定されたidに設定する</span>
+        <span class="n">custom_value</span><span class="p">[</span><span class="n">value_id</span><span class="p">]</span> <span class="o">=</span> <span class="o">*</span><span class="n">value_data</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">command_id</span> <span class="o">==</span> <span class="n">id_custom_get_value</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// キーボードの指定されたidの設定を取得する</span>
+        <span class="o">*</span><span class="n">value_data</span> <span class="o">=</span> <span class="n">custom_value</span><span class="p">[</span><span class="n">value_id</span><span class="p">];</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">command_id</span> <span class="o">==</span> <span class="n">id_custom_save</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 必要に応じてeeprom_update_byte などでeepromに保存する</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>  </div>
+</details>
+
+<p><br /></p>
+
+<p>以上が単純な例です。いろいろメニューを増やそうとするとidの管理やkeymap.cの分岐が増えて大変になったり、設定を受け取った時点でキーボード側で処理を走らせたりしたくなるので、BLE Micro Proでは<a href="https://github.com/sekigon-gonnoc/vial-qmk/blob/dev/ble-micro-pro/util/vial_generate_custom_menu_id.py">vial.jsonからid管理のヘッダファイルを生成するスクリプト</a>や<a href="https://github.com/sekigon-gonnoc/vial-qmk/blob/a6492d52dd681d6e22404a36a14b8bf632c31198/keyboards/sekigon/torabo_tsuki/eeconfig_kb.c#L82">idと設定の構造体の紐づけ</a>などをしています。</p>
+
+<p><br /></p>
+
+<p>その後、設定のためにツールをあれこれ変えるのが面倒に感じたのでキーマップ編集機能などが追加されて今に至ります。<br />
+機能追加にあたってはVialを使っていて不便に感じた点を解消していきました。</p>
+
+<p>BLE Micro Proでの使用を念頭に置いて無線経由での書き換え機能を追加しました。USB接続と違いキーボード接続時にすべてのデータをキーボードから読み込むと表示が非常に遅いことが分かったので、キーマップや設定は表示に必要なものだけを都度読み込んでいます。<br />
+キーマップを書き換えるときに必要なキーを探すのが大変だったり、意図しないキーをクリックしただけで書き換わってしまうのも慣れなかったので、Remapを参考にポップアップからリストを絞り込んで選択できるようにしました。<br />
+キーマップのファイル出力機能もブラウザ版Vialではなぜか使えないので追加しました。ただし、キーコードの辞書をQMKベースにしていたところVialでは若干違う辞書を使っていることが後から分かり、設定ファイルは互換性がないものになっています。</p>
+
+<p>後述の<a href="#torabo-tsuki">torabo-tsuki</a>ではCustom UIをフル活用してトラックボールの設定などを編集できるようにしました。また、BLE Micro Proのファームウェアにも、無線接続先のIDに応じてデフォルトレイヤーを切り替える機能を追加しています。<br />
+マトリクステスターなど足りない機能もあったり、見た目もおしゃれじゃないですが、少なくとも必要な機能は揃っていると思います。<br />
+冒頭で述べたようにBLE Micro Proじゃなくても使えるので、良かったら使ってみてください。</p>
+
+<h2 id="gtrk67">GTRK67</h2>
+
+<p>キーケット2024に向けて作成したトラックボール付きの一体型キーボードがGTRK67です。日本語配列対応の67キー配列で、右手または左手の親指部分にトラックボールを搭載できます。 ダイオードやスイッチソケットは半田済みです。有線接続でのみ使用する場合は半田付けせずに組み立てられます。 ファームウェアはvial-qmkベースで、RemapやVialでキーマップや設定を変更できます。</p>
+
+<p>単四電池を2本搭載することで無線接続もできます。ファームウェアやトラックボールは無線用にチューニングされており、低消費電力を実現しています。</p>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://github.com/sekigon-gonnoc/gtrk67" target="_blank">
+                        <img src="https://opengraph.githubassets.com/83352c31c6de7cd21c439497b8750fd99c87671e921df3b59552db397796266d/sekigon-gonnoc/gtrk67" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://github.com/sekigon-gonnoc/gtrk67" target="_blank">GitHub - sekigon-gonnoc/gtrk67</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">Contribute to sekigon-gonnoc/gtrk67 development by creating an account on GitHub.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p><a href="/2022/12/19/keyboard-advent-calendar.html#玉太郎2仮">2022年に作成した玉太郎2(仮)</a>そのまま頒布しようかとも思ったのですが、センサが2個になると組立時に考えることが増えたり消費電力も増えるので、別のキーボードを考えなおしました。</p>
+
+<p>キーケット後にUS配列版も作りたかったのですが、残念ながらセンサが入手不可になってしまったためお蔵入りとなりました。（保守用のセンサは確保しています）</p>
+
+<h2 id="torabo-tsuki">torabo-tsuki</h2>
+
+<p>一体型トラボ付きを作ったなら分割型も、ということで作ったのがtorabo-tsukiシリーズです。</p>
+
+<p>トラックボールセンサーと基板をフレキシブルケーブルで接続することでトラックボールの位置を自由に調整できます。自分は親指キーぎりぎりまで近づけたかったため、親指キーをChocにしました。</p>
+
+<p>GTRK67からさらに省電力化を進めることで、トラックボール操作中平均電流が2mA、待機時の平均電流が500~200μA（マスター側, 1.2V）まで削減できました。<br />
+これにより、乾電池一本でも数か月間も利用できます。</p>
+
+<p>先述の<a href="#via-custom-ui-for-vial">VIA Custom UI for Vial</a>を使うことで、トラックボールの感度や方向補正、バッテリーモード、JIS/USキーボード変換など、各種オプションを変更できるようにしています。</p>
+
+<div class="jekyll-linkpreview-wrapper">
+    <div class="jekyll-linkpreview-wrapper-inner">
+        <div class="jekyll-linkpreview-content">
+            <div class=" jekyll-linkpreview-body">
+                
+                <div class="jekyll-linkpreview-image">
+                    <a href="https://github.com/sekigon-gonnoc/torabo-tsuki" target="_blank">
+                        <img src="https://opengraph.githubassets.com/e6c72b543344102a73622672dc4cedf454da44571a100589f3330962b8742782/sekigon-gonnoc/torabo-tsuki" />
+                    </a>
+                </div>
+                
+                <h2 class="jekyll-linkpreview-title">
+                    <a href="https://github.com/sekigon-gonnoc/torabo-tsuki" target="_blank">GitHub - sekigon-gonnoc/torabo-tsuki</a>
+                </h2>
+                <div class="jekyll-linkpreview-description">torabo-tsukiはトラックボール付きの無線分割キーボードキットです. Contribute to sekigon-gonnoc/torabo-tsuki development by creating an account on GitHub.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>12月発送分は現在梱包作業中です。ご購入いただいた方は今しばらくお待ちください。</p>
+
+<h2 id="自作ローラーマウス">自作ローラーマウス</h2>
+
+<p>ローラーマウスを作ってみたりもしました。2本のパイプを3Dプリントしたセンサー保持部で連結する構造になっています。試作の寸法だと連結部でたわんでしまって外側ローラーの内壁がセンサーにこする問題がありました。一応改良モデルも設計していますが、お披露目するのはいつになるやら。</p>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">一般名称はローラースライド式マウス？　構造はこんな感じで、電極が届いたらパイプの中に単4電池が仕込める予定 <a href="https://t.co/dTNZDiHDpr">pic.twitter.com/dTNZDiHDpr</a></p>&mdash; せきごん (@_gonnoc) <a href="https://twitter.com/_gonnoc/status/1846884633109319938?ref_src=twsrc%5Etfw">October 17, 2024</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h2 id="12mmトラックボールモジュール">12mmトラックボールモジュール</h2>
+
+<p>数年前まであった<a href="https://bit-trade-one.co.jp/selfmadekb/adtb7m/">7mmトラックボールモジュール</a>的なものが欲しくなり、小型のセンサーを使って作ってみました。<br />
+7mmトラックボールモジュールより背が高いですが、代わりにスイッチプレートの14mm各の穴に取り付けられます。フレキシブルケーブルで配線できるので、キーボード側が対応していれば好きな位置に小型トラックボールを付けられるようになります。<br />
+現在頒布方法を検討中です。いくつも作るとなると組立が大変なので、トラックボール部分は公開してセンサーだけ頒布とかになるかもしれません。</p>
+
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">キースイッチと置き換えられる12mmトラックボールモジュール。モジュール自体は動いたので、次はFPCコネクタ付きのpro micro互換機でも作ってみようかな <a href="https://t.co/WFEvG3jwm0">pic.twitter.com/WFEvG3jwm0</a></p>&mdash; せきごん (@_gonnoc) <a href="https://twitter.com/_gonnoc/status/1859147132709859635?ref_src=twsrc%5Etfw">November 20, 2024</a></blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h2 id="来年のこと">来年のこと</h2>
+
+<p>来年のキーケット2025に、<a href="https://catalog.keyket.jp/tokyo-2025/exhibitor/B-01">のぎけす屋(B-01)</a>として出展予定です。<br />
+よろしくお願いします。</p>
+
+<p>この記事はtorabo-tsuki(S)で書きました。</p>
+
+    <div id="share-bar" style="margin-top: 10px; margin-bottom: 10px;">
+    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button"
+        data-show-count="false">Tweet</a>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <a href="http://b.hatena.ne.jp/entry/" class="hatena-bookmark-button"
+        data-hatena-bookmark-layout="basic-label-counter" data-hatena-bookmark-lang="ja"
+        title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only@2x.png"
+            alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a>
+    <script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8"
+        async="async"></script>
+</div>
+  </div><a class="u-url" href="/2024/12/21/keyboard-advent-calendar.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>年に一回のアドベントカレンダー投稿を置く場所</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a href="https://github.com/sekigon-gonnoc"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">sekigon-gonnoc</span></a></li><li><a href="https://www.twitter.com/_gonnoc"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">_gonnoc</span></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+
+</body>
+
+</html>

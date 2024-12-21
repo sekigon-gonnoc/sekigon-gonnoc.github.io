@@ -1,0 +1,1469 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2024-12-21T07:04:41+00:00</updated><id>/feed.xml</id><title type="html">年に一回のアドベントカレンダー投稿を置く場所</title><subtitle>年に一回のアドベントカレンダー投稿を置く場所</subtitle><entry><title type="html">キーボード自動設計ツールを作っている話と、2024年の振り返り</title><link href="/2024/12/21/keyboard-advent-calendar.html" rel="alternate" type="text/html" title="キーボード自動設計ツールを作っている話と、2024年の振り返り" /><published>2024-12-21T00:00:00+00:00</published><updated>2024-12-21T00:00:00+00:00</updated><id>/2024/12/21/keyboard-advent-calendar</id><content type="html" xml:base="/2024/12/21/keyboard-advent-calendar.html">&lt;p&gt;&lt;a href=&quot;https://adventar.org/calendars/10025&quot;&gt;キーボード #1 Advent Calender 2024&lt;/a&gt; 21日目担当のせきごんです。BLE Micro Proなど&lt;a href=&quot;https://nogikes.booth.pm/&quot;&gt;キーボード関連のモジュールを色々&lt;/a&gt;作っています。&lt;/p&gt;
+
+&lt;p&gt;今年作ったもの(作っているもの)を振り返っていきます。&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#auto-kdk&quot; id=&quot;markdown-toc-auto-kdk&quot;&gt;auto-kdk&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#概要&quot; id=&quot;markdown-toc-概要&quot;&gt;概要&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#説明&quot; id=&quot;markdown-toc-説明&quot;&gt;説明&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#via-custom-ui-for-vial&quot; id=&quot;markdown-toc-via-custom-ui-for-vial&quot;&gt;VIA Custom UI for Vial&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#特徴&quot; id=&quot;markdown-toc-特徴&quot;&gt;特徴&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#背景経緯など&quot; id=&quot;markdown-toc-背景経緯など&quot;&gt;背景・経緯など&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#gtrk67&quot; id=&quot;markdown-toc-gtrk67&quot;&gt;GTRK67&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#torabo-tsuki&quot; id=&quot;markdown-toc-torabo-tsuki&quot;&gt;torabo-tsuki&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#自作ローラーマウス&quot; id=&quot;markdown-toc-自作ローラーマウス&quot;&gt;自作ローラーマウス&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#12mmトラックボールモジュール&quot; id=&quot;markdown-toc-12mmトラックボールモジュール&quot;&gt;12mmトラックボールモジュール&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#来年のこと&quot; id=&quot;markdown-toc-来年のこと&quot;&gt;来年のこと&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;auto-kdk&quot;&gt;auto-kdk&lt;/h2&gt;
+
+&lt;h3 id=&quot;概要&quot;&gt;概要&lt;/h3&gt;
+
+&lt;p&gt;最近は&lt;a href=&quot;https://sekigon-gonnoc.github.io/auto-kdk&quot;&gt;Auto-Keyboard-Design-Kit&lt;/a&gt;なるものを作っています。その名の通り自動でキーボードを設計してくれるツールとコントローラーボードです。キー配置を指定すると基板・ケース・ファームウェア（の設定）を自動で設計してくれます。&lt;/p&gt;
+
+&lt;p&gt;現在はファイル出力機能をオフにしたデモ版を公開しています。いくつかの修正が完了し、何パターンかの試作とコントローラーボードの頒布準備が整ったらファイル出力機能も有効にします。&lt;/p&gt;
+
+&lt;h3 id=&quot;説明&quot;&gt;説明&lt;/h3&gt;
+
+&lt;p&gt;auto-kdkを使ったキーボードの設計フローを説明します。&lt;/p&gt;
+
+&lt;p&gt;分割か一体型か、スイッチはMXかChocV2(19mm/17mmピッチ)を選択したあと、マトリクスのサイズとどのスイッチを使うかを選択します。 auto-kdk用のコントローラーボードは18本のIOを持っていて、現時点では最大のマトリクスサイズは5x13または6x12です。&lt;br /&gt;
+マトリクスの形を決定したら、それぞれのキーの位置・サイズとコントローラボードの位置を設定します。必ず配線できるわけではなく、マトリクスとコントローラの位置関係によっては失敗することもあります。その場合は位置を調整するか、後ほど基板CADに読み込んでからに修正することになります。&lt;br /&gt;
+下の図では、左側が位置の設定前、右側が位置の設定後の例です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2024-12-20-23-50-58.png&quot; alt=&quot;&quot; /&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;レイアウトを決定すると基板のデータが自動で生成されます。Live updateを有効にするとレイアウトの変更がリアルタイムで反映されます。基板の外形やコントローラーボードのピンの干渉がないことなどを確認したら、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Start routing&lt;/code&gt;ボタンを押すと自動で配線されます。多少重い計算なので、PCやブラウザによっては時間がかかります。自分の環境だとfirefoxよりchromeのほうが速かったです。&lt;br /&gt;
+下の図では、左側が配線前、右側が配線後の状態です。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2024-12-20-23-52-18.png&quot; alt=&quot;&quot; /&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;さらに下に移動するとケースのデータも生成されています。これもLive updateが有効の場合はレイアウトの変更がリアルタイムで反映されます。ケースは2ピース構造で、3Dプリントサービスで製造することを想定しています。&lt;br /&gt;
+今回は無線用のコントローラーボードを使う前提のため、ボトムケースにはUSB用の穴のほかに電源スイッチやバッテリー用のスペースが空いています。ChocV2スイッチを使う場合はキーキャップとトッププレートの干渉除けにスイッチをかさ上げする突起がトッププレートに付きます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2024-12-20-23-55-32.png&quot; alt=&quot;&quot; /&gt;&lt;br /&gt;
+&lt;img src=&quot;/assets/images/2024-12-20-23-57-12.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;ケースのチルト角やベゼルの太さも変更できるようになっています。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2024-12-20-23-59-32.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;ケースの微妙な凹みが気になったりする場合は、レイアウト画面で&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;padding&lt;/code&gt;モジュールを追加することである程度は外形を制御できます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2024-12-21-00-04-27.png&quot; alt=&quot;&quot; /&gt;&lt;br /&gt;
+&lt;img src=&quot;/assets/images/2024-12-21-00-04-56.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;トラックボールやエンコーダを付けたい場合もレイアウト画面から拡張モジュールを追加します。この辺りはまだ拡張モジュールの詳細が決まっていないので、形などは変わっていくと思います。現時点で決まっていることとして、拡張モジュールはコントローラボードとフレキシブルケーブルで直結するようになっていて、メイン基板の配線には影響しません。ただし、無線版のコントローラボードはピン数の都合でマトリクス用の一部IOと拡張用IOが共用になっており、拡張モジュールを使用する場合はマトリクスの最大サイズが小さくなります。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2024-12-21-00-39-31.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2024-12-21-00-40-14.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;レイアウトでボール位置を指定&lt;/td&gt;
+      &lt;td&gt;ケースにモジュール取付用の穴が開く&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;編集が完了したらGenerateボタン(2024/12/21時点では非表示)をクリックすると、基板(json)・ケース(STL)・ファームウェア用設定ファイル類がzipファイルとしてダウンロードできます。&lt;/p&gt;
+
+&lt;p&gt;基板データはEasyEDA(STD)で読み込みます。EasyEDA(Pro)にインポートすることもできます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2024-12-21-00-08-59.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;配線にティアドロップを付けたい場合はEasyEDAの機能で1クリックで付けられます。&lt;br /&gt;
+EsyEDAはJLCPCBと連携しているため、そのまま基板を発注できます。ソケットをJLCPCBに預けている人はPCBAまで頼めます。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2024-12-21-00-10-53.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2024-12-21-00-10-25.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ティアドロップ&lt;/td&gt;
+      &lt;td&gt;JLCPCBで製造&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;こんな感じでJLCPCBに基板とケースを頼んでみた結果がこちらです。&lt;br /&gt;
+コントローラーボードとメイン基板は1.27mmピッチのコンスルーで接続予定なのですが、手配が間に合わなかったので完全な動作確認まではできていません。メイン基板側は単純なマトリクスなので問題なく動くと考えています。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2024-12-21-00-19-23.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2024-12-21-00-19-09.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2024-12-21-00-20-20.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;上から&lt;/td&gt;
+      &lt;td&gt;横から&lt;/td&gt;
+      &lt;td&gt;メイン基板&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;今後のマイルストーンとしては&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;右手用コントローラボード(無線版)の設計&lt;/li&gt;
+  &lt;li&gt;MX以外にChocV2(19mm/17mmピッチ)での動作確認&lt;/li&gt;
+  &lt;li&gt;設計アプリのファイル出力機能の有効化&lt;/li&gt;
+  &lt;li&gt;コントローラボード(無線版)の頒布&lt;/li&gt;
+  &lt;li&gt;有線版コントローラボードの設計、設計アプリ側の対応&lt;/li&gt;
+  &lt;li&gt;トラックボールモジュールの設計&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;などを考えています。キーケットまでにはコントローラボードの頒布を間に合わせたいです。&lt;br /&gt;
+ケース周りはあまり知見がないので、デモサイトを操作して思うところのある人がいたらご連絡ください。&lt;/p&gt;
+
+&lt;h2 id=&quot;via-custom-ui-for-vial&quot;&gt;VIA Custom UI for Vial&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/&quot;&gt;VIA Custom UI for Vial&lt;/a&gt;は&lt;a href=&quot;https://get.vial.today/&quot;&gt;Vial&lt;/a&gt;をベースに拡張したWebアプリです。&lt;br /&gt;
+Vialと互換の機能に加えて、いくつかの拡張機能や特徴があります。ときどき勘違いされますがBMP専用ではありません。Vial対応しているキーボードならマイコンによらず使えます(protocol 6)。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2024-12-20-16-38-55.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;特徴&quot;&gt;特徴&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;起動が速い
+    &lt;ul&gt;
+      &lt;li&gt;キーボードを選択してからキーマップが表示されるまでの時間がVialより短いです&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Remapを参考にしたキー設定方法
+    &lt;ul&gt;
+      &lt;li&gt;Remapを参考に、ポップアップとドラッグアンドドロップでキー設定を変更します&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;vial.jsonにカスタムUIを設定可能
+    &lt;ul&gt;
+      &lt;li&gt;VIAのようなカスタムUI機能を使用できます&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;ファイル保存/読込機能
+    &lt;ul&gt;
+      &lt;li&gt;ブラウザ版でもキーマップ設定をjsonファイルに書き出せます(注:Vialの.vilファイルとの互換性はありません)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;BLE経由の書き換え機能
+    &lt;ul&gt;
+      &lt;li&gt;BLE Micro ProではBLE経由でもキーマップや設定が変更できます&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;背景経緯など&quot;&gt;背景・経緯など&lt;/h3&gt;
+
+&lt;p&gt;QMK Firmwareをベースにしたキーボードのキーマップを書き換えるためのアプリとして、VIA, Remap, Vialがあります。&lt;/p&gt;
+
+&lt;p&gt;まずVialについて簡単に説明すると、Remapのようにキーマップを書き換える機能に加えて、コンボやタップダンス、タップ設定などの機能も持っているアプリです。&lt;br /&gt;
+キーボードに書き込むファームウェアはQMK Firmwareのフォークで、キーボード側にキーレイアウトの情報を持たせるため、アプリ側に情報を登録しなくてもキーボードを認識してくれます。&lt;br /&gt;
+ブラウザからも利用できますし、ローカル用のアプリも用意されています。&lt;br /&gt;
+BLE Micro Proのファームウェアは&lt;a href=&quot;/2023/12/09/keyboard-advent-calendar.html#vial対応ble-micro-pro&quot;&gt;昨年Vialをベースとしたものに移行した&lt;/a&gt;ため、v1以降のファームウェアを書き込むとどのキーボードでもVialが使えます。もちろん、以前のようにRemap（0.19以降用）を使うこともできます。&lt;/p&gt;
+
+&lt;p&gt;一方、VIA/Remapはいずれも本家のQMK Firmwareの機能を利用しています。事前にjsonファイルをアプリ側に登録する必要があり、日本の自作キーボードキットでは登録時のレビューの早さに定評がありRemapが主流の印象です。&lt;br /&gt;
+そんなわけで日本のキットでは見かけないVIAですが、VIA独自の機能として&lt;a href=&quot;https://www.caniusevia.com/docs/custom_ui&quot;&gt;Custom UI&lt;/a&gt;という機能があります。設定ファイルにメニューを定義しておくことで独自のメニューをアプリ上に表示する機能です。&lt;br /&gt;
+ファームウェア側に対応するデータの送受信部を実装しておくことでキーマップ以外の設定もGUIから変更できるようになります。&lt;br /&gt;
+Custom UI機能はアプリ側のGUI設定にあわせてファーム側の変更も必要ということを踏まえるとVialとの相性が良さそうですが、残念ながらVialには実装されていません(2024年12月時点)。&lt;/p&gt;
+
+&lt;p&gt;そこで、Custom UI機能をVial向けに移植してみたのが&lt;a href=&quot;https://sekigon-gonnoc.github.io/via-custom-ui-for-vial/&quot;&gt;VIA Custom UI for Vial&lt;/a&gt;です。&lt;br /&gt;
+最初に作った時はCustom UI機能だけサポートするつもりだったのでこの名前になりました。&lt;/p&gt;
+
+&lt;p&gt;たとえばvial.jsonに下記のように追記すると、Trackballというメニューが表示され、分解能を選択するためのドロップダウンリストが表示されます。&lt;/p&gt;
+
+&lt;details&gt;
+  &lt;summary&gt;vial.json設定例&lt;/summary&gt;
+
+  &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;menus&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;label&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Trackball&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;label&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Cursor&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+              &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;label&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CPI&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+              &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;dropdown&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+              &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;id_trackball_cpi&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+              &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+              &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;options&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;200&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;400&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;600&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;800&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+              &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+          &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+
+  &lt;p&gt;id_trackball_cpiから2つ目の数字、1がidの数値です。&lt;/p&gt;
+
+&lt;/details&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;keymap.cにはデータ受信時の処理を記載します。&lt;/p&gt;
+
+&lt;details&gt;
+  &lt;summary&gt;keymap.cの例&lt;/summary&gt;
+
+  &lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;raw_hid_receive_kb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;command_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;// Due to an older version of via.c in Vial that does not support&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// id_custom_set/get_value, we use id_handled to invoke via_custom_value_command_kb.&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;command_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id_unhandled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;via_custom_value_command_kb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;via_custom_value_command_kb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// data = [ command_id, channel_id, value_id, value_data ]&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;command_id&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;channel_id&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value_id&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;uint8_t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value_data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;command_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id_custom_get_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// キーボードの指定されたidに設定する&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;custom_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;command_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id_custom_get_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// キーボードの指定されたidの設定を取得する&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value_data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;custom_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;command_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id_custom_save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;// 必要に応じてeeprom_update_byte などでeepromに保存する&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+&lt;/details&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;以上が単純な例です。いろいろメニューを増やそうとするとidの管理やkeymap.cの分岐が増えて大変になったり、設定を受け取った時点でキーボード側で処理を走らせたりしたくなるので、BLE Micro Proでは&lt;a href=&quot;https://github.com/sekigon-gonnoc/vial-qmk/blob/dev/ble-micro-pro/util/vial_generate_custom_menu_id.py&quot;&gt;vial.jsonからid管理のヘッダファイルを生成するスクリプト&lt;/a&gt;や&lt;a href=&quot;https://github.com/sekigon-gonnoc/vial-qmk/blob/a6492d52dd681d6e22404a36a14b8bf632c31198/keyboards/sekigon/torabo_tsuki/eeconfig_kb.c#L82&quot;&gt;idと設定の構造体の紐づけ&lt;/a&gt;などをしています。&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;その後、設定のためにツールをあれこれ変えるのが面倒に感じたのでキーマップ編集機能などが追加されて今に至ります。&lt;br /&gt;
+機能追加にあたってはVialを使っていて不便に感じた点を解消していきました。&lt;/p&gt;
+
+&lt;p&gt;BLE Micro Proでの使用を念頭に置いて無線経由での書き換え機能を追加しました。USB接続と違いキーボード接続時にすべてのデータをキーボードから読み込むと表示が非常に遅いことが分かったので、キーマップや設定は表示に必要なものだけを都度読み込んでいます。&lt;br /&gt;
+キーマップを書き換えるときに必要なキーを探すのが大変だったり、意図しないキーをクリックしただけで書き換わってしまうのも慣れなかったので、Remapを参考にポップアップからリストを絞り込んで選択できるようにしました。&lt;br /&gt;
+キーマップのファイル出力機能もブラウザ版Vialではなぜか使えないので追加しました。ただし、キーコードの辞書をQMKベースにしていたところVialでは若干違う辞書を使っていることが後から分かり、設定ファイルは互換性がないものになっています。&lt;/p&gt;
+
+&lt;p&gt;後述の&lt;a href=&quot;#torabo-tsuki&quot;&gt;torabo-tsuki&lt;/a&gt;ではCustom UIをフル活用してトラックボールの設定などを編集できるようにしました。また、BLE Micro Proのファームウェアにも、無線接続先のIDに応じてデフォルトレイヤーを切り替える機能を追加しています。&lt;br /&gt;
+マトリクステスターなど足りない機能もあったり、見た目もおしゃれじゃないですが、少なくとも必要な機能は揃っていると思います。&lt;br /&gt;
+冒頭で述べたようにBLE Micro Proじゃなくても使えるので、良かったら使ってみてください。&lt;/p&gt;
+
+&lt;h2 id=&quot;gtrk67&quot;&gt;GTRK67&lt;/h2&gt;
+
+&lt;p&gt;キーケット2024に向けて作成したトラックボール付きの一体型キーボードがGTRK67です。日本語配列対応の67キー配列で、右手または左手の親指部分にトラックボールを搭載できます。 ダイオードやスイッチソケットは半田済みです。有線接続でのみ使用する場合は半田付けせずに組み立てられます。 ファームウェアはvial-qmkベースで、RemapやVialでキーマップや設定を変更できます。&lt;/p&gt;
+
+&lt;p&gt;単四電池を2本搭載することで無線接続もできます。ファームウェアやトラックボールは無線用にチューニングされており、低消費電力を実現しています。&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/gtrk67&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://opengraph.githubassets.com/83352c31c6de7cd21c439497b8750fd99c87671e921df3b59552db397796266d/sekigon-gonnoc/gtrk67&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/gtrk67&quot; target=&quot;_blank&quot;&gt;GitHub - sekigon-gonnoc/gtrk67&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;Contribute to sekigon-gonnoc/gtrk67 development by creating an account on GitHub.&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;/2022/12/19/keyboard-advent-calendar.html#玉太郎2仮&quot;&gt;2022年に作成した玉太郎2(仮)&lt;/a&gt;そのまま頒布しようかとも思ったのですが、センサが2個になると組立時に考えることが増えたり消費電力も増えるので、別のキーボードを考えなおしました。&lt;/p&gt;
+
+&lt;p&gt;キーケット後にUS配列版も作りたかったのですが、残念ながらセンサが入手不可になってしまったためお蔵入りとなりました。（保守用のセンサは確保しています）&lt;/p&gt;
+
+&lt;h2 id=&quot;torabo-tsuki&quot;&gt;torabo-tsuki&lt;/h2&gt;
+
+&lt;p&gt;一体型トラボ付きを作ったなら分割型も、ということで作ったのがtorabo-tsukiシリーズです。&lt;/p&gt;
+
+&lt;p&gt;トラックボールセンサーと基板をフレキシブルケーブルで接続することでトラックボールの位置を自由に調整できます。自分は親指キーぎりぎりまで近づけたかったため、親指キーをChocにしました。&lt;/p&gt;
+
+&lt;p&gt;GTRK67からさらに省電力化を進めることで、トラックボール操作中平均電流が2mA、待機時の平均電流が500~200μA（マスター側, 1.2V）まで削減できました。&lt;br /&gt;
+これにより、乾電池一本でも数か月間も利用できます。&lt;/p&gt;
+
+&lt;p&gt;先述の&lt;a href=&quot;#via-custom-ui-for-vial&quot;&gt;VIA Custom UI for Vial&lt;/a&gt;を使うことで、トラックボールの感度や方向補正、バッテリーモード、JIS/USキーボード変換など、各種オプションを変更できるようにしています。&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/torabo-tsuki&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://opengraph.githubassets.com/e6c72b543344102a73622672dc4cedf454da44571a100589f3330962b8742782/sekigon-gonnoc/torabo-tsuki&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/torabo-tsuki&quot; target=&quot;_blank&quot;&gt;GitHub - sekigon-gonnoc/torabo-tsuki&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;torabo-tsukiはトラックボール付きの無線分割キーボードキットです. Contribute to sekigon-gonnoc/torabo-tsuki development by creating an account on GitHub.&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;12月発送分は現在梱包作業中です。ご購入いただいた方は今しばらくお待ちください。&lt;/p&gt;
+
+&lt;h2 id=&quot;自作ローラーマウス&quot;&gt;自作ローラーマウス&lt;/h2&gt;
+
+&lt;p&gt;ローラーマウスを作ってみたりもしました。2本のパイプを3Dプリントしたセンサー保持部で連結する構造になっています。試作の寸法だと連結部でたわんでしまって外側ローラーの内壁がセンサーにこする問題がありました。一応改良モデルも設計していますが、お披露目するのはいつになるやら。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;一般名称はローラースライド式マウス？　構造はこんな感じで、電極が届いたらパイプの中に単4電池が仕込める予定 &lt;a href=&quot;https://t.co/dTNZDiHDpr&quot;&gt;pic.twitter.com/dTNZDiHDpr&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1846884633109319938?ref_src=twsrc%5Etfw&quot;&gt;October 17, 2024&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;12mmトラックボールモジュール&quot;&gt;12mmトラックボールモジュール&lt;/h2&gt;
+
+&lt;p&gt;数年前まであった&lt;a href=&quot;https://bit-trade-one.co.jp/selfmadekb/adtb7m/&quot;&gt;7mmトラックボールモジュール&lt;/a&gt;的なものが欲しくなり、小型のセンサーを使って作ってみました。&lt;br /&gt;
+7mmトラックボールモジュールより背が高いですが、代わりにスイッチプレートの14mm各の穴に取り付けられます。フレキシブルケーブルで配線できるので、キーボード側が対応していれば好きな位置に小型トラックボールを付けられるようになります。&lt;br /&gt;
+現在頒布方法を検討中です。いくつも作るとなると組立が大変なので、トラックボール部分は公開してセンサーだけ頒布とかになるかもしれません。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;キースイッチと置き換えられる12mmトラックボールモジュール。モジュール自体は動いたので、次はFPCコネクタ付きのpro micro互換機でも作ってみようかな &lt;a href=&quot;https://t.co/WFEvG3jwm0&quot;&gt;pic.twitter.com/WFEvG3jwm0&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1859147132709859635?ref_src=twsrc%5Etfw&quot;&gt;November 20, 2024&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;来年のこと&quot;&gt;来年のこと&lt;/h2&gt;
+
+&lt;p&gt;来年のキーケット2025に、&lt;a href=&quot;https://catalog.keyket.jp/tokyo-2025/exhibitor/B-01&quot;&gt;のぎけす屋(B-01)&lt;/a&gt;として出展予定です。&lt;br /&gt;
+よろしくお願いします。&lt;/p&gt;
+
+&lt;p&gt;この記事はtorabo-tsuki(S)で書きました。&lt;/p&gt;</content><author><name></name></author><summary type="html">キーボード #1 Advent Calender 2024 21日目担当のせきごんです。BLE Micro Proなどキーボード関連のモジュールを色々作っています。</summary></entry><entry><title type="html">2023年の振り返り</title><link href="/2023/12/09/keyboard-advent-calendar.html" rel="alternate" type="text/html" title="2023年の振り返り" /><published>2023-12-09T00:00:00+00:00</published><updated>2023-12-09T00:00:00+00:00</updated><id>/2023/12/09/keyboard-advent-calendar</id><content type="html" xml:base="/2023/12/09/keyboard-advent-calendar.html">&lt;p&gt;&lt;a href=&quot;https://adventar.org/calendars/8789&quot;&gt;キーボード #2 Advent Calender 2023&lt;/a&gt; 9日目担当のせきごんです。BLE Micro Proなど&lt;a href=&quot;https://nogikes.booth.pm/&quot;&gt;キーボード関連のモジュールを色々&lt;/a&gt;作っています。&lt;/p&gt;
+
+&lt;p&gt;今年作ったものを振り返っていきます。&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#今年作ったもの&quot; id=&quot;markdown-toc-今年作ったもの&quot;&gt;今年作ったもの&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#keyboard-quantizer-mini&quot; id=&quot;markdown-toc-keyboard-quantizer-mini&quot;&gt;Keyboard Quantizer Mini&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#vial対応ble-micro-pro&quot; id=&quot;markdown-toc-vial対応ble-micro-pro&quot;&gt;Vial対応BLE Micro Pro&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;今年作ったもの&quot;&gt;今年作ったもの&lt;/h2&gt;
+
+&lt;h3 id=&quot;keyboard-quantizer-mini&quot;&gt;Keyboard Quantizer Mini&lt;/h3&gt;
+
+&lt;p&gt;Keyboard Quantizerの小型版を作りました。Keyboard Quantizerは、USBキーボード・マウスとPCの間に挟むことでQMKを使って設定を変更できるようにするアダプタです。&lt;br /&gt;
+2021年末に作った&lt;a href=&quot;https://github.com/sekigon-gonnoc/Pico-PIO-USB&quot;&gt;Pico-PIO-USB&lt;/a&gt;を利用することでRP2040単体でUSBホスト・デバイスが実現できたため、基板を小型化できました。&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/4823647&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/4823647/5689cbb7-fcd0-40df-a5d4-da140a19bb44_base_resized.jpg&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/4823647&quot; target=&quot;_blank&quot;&gt;Keyboard Quantizer Mini - のぎけす屋 - BOOTH&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;** これは有線版です。無線への変換は Keyboard Quantizer B ( https://nogikes.booth.pm/items/3095820 )が対応しています ** ** 使い方によってはファームウェア開発が必要になる場合があります ** Keyboard Quantizerは一般的なUSBキーボードやマウスを自作キーボード用のファームウェアの定番であるQMKに対応させるためのアダプタです。キー配列を自由に変えられるだけでなく、キーボードにレイヤ、マクロ、コンビネーション、タップダンスなどの機能を追加できるようになります。&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/keyboard-quantizer-doc&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://opengraph.githubassets.com/00e064879deb20d79f191dc28d11155180875d5817109a9babbc797a701282dd/sekigon-gonnoc/keyboard-quantizer-doc&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/keyboard-quantizer-doc&quot; target=&quot;_blank&quot;&gt;GitHub - sekigon-gonnoc/keyboard-quantizer-doc&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;Convert your keyboard QMK enabled. Contribute to sekigon-gonnoc/keyboard-quantizer-doc development by creating an account on GitHub.&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;ファームウェアの構成も合わせて変更しました。RemapやVialからキーマップを変更できるバージョンと、YAML形式の設定ファイルを使用するバージョンの2種類を作成しました。&lt;br /&gt;
+後者のバージョンを作成した理由はいくつかあります。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Remap, Vialよりもさらに細かく色々な設定を変更したい&lt;/li&gt;
+  &lt;li&gt;テキストで設定を管理したい
+    &lt;ul&gt;
+      &lt;li&gt;後から設定を見返したときに、どのキーに置き換えを設定しているのか一目でわかるようにしたい&lt;/li&gt;
+      &lt;li&gt;コメントを付けたい&lt;/li&gt;
+      &lt;li&gt;差分管理できるようにしたい&lt;/li&gt;
+      &lt;li&gt;GUIをポチポチするのが面倒くさい&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;PCでコンパニオンアプリを実行することで、フォーカスが当たっているウィンドウ合わせてキーマップや設定を変えられるようにもしてみました。&lt;/p&gt;
+
+&lt;details&gt;
+  &lt;summary&gt;設定サンプル1&lt;/summary&gt;
+
+  &lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# マウス用設定&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# 常時有効なキーマップを定義する&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;keymaps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;layer&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;c1&quot;&gt;# レイヤ0ではボタン6,7,8の動作を変更する&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# ボタン6,7でコピペ&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_BTN6&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;LCTL(KC_C)&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_BTN7&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;LCTL(KC_V)&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# ボタン8をタップしたときは中クリック、長押ししたときはレイヤ1に移動&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_BTN8&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;LT(1, KC_BTN3)&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;mouse&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# xyの移動速度を1.5にする&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;scale_x&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1.5&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;scale_y&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1.5&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;layer&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;c1&quot;&gt;# レイヤ1では各ボタン、ホイール、ジェスチャに機能を割り当てる&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_BTN1&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_ENT&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_BTN2&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_BSPC&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# 中クリックで再生・停止&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_BTN3&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_MEDIA_STOP&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# レイヤ1でのホイールの動作を割り当てる&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# 左右で曲送り、曲戻し&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_MS_WH_RIGHT&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_MEDIA_PREV_TRACK&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_MS_WH_LEFT&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_MEDIA_NEXT_TRACK&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# 上下でウィンドウ切り替え&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_MS_WH_UP&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;LALT(KC_TAB)&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_MS_WH_DOWN&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;LSA(KC_TAB)&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# レイヤ1の状態でカーソルを動かし、レイヤ0に戻るタイミングでマウスジェスチャが実行される&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# 左下に移動したらEndを送信&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;MS_GESTURE_DL&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_END&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# 左上に移動したらHomeを送信&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;MS_GESTURE_UL&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_HOME&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+
+&lt;/details&gt;
+
+&lt;details&gt;
+  &lt;summary&gt;設定サンプル2&lt;/summary&gt;
+
+  &lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# 常時有効な設定&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;keymaps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;layer&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# CAPSを単押しTAB, 長押しCTRL&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_CAPS&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;LCTL_T(KC_TAB)&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# RSHIFTを単押しでLEADER,　長押しでSHIFT&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;KC_RSFT&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+              &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tap_dance&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;single_tap&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;QK_LEAD&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;single_hold&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;KC_RSFT&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;combos&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;combo&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;c1&quot;&gt;# D,L同時押しで一行削除&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_D&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;KC_L&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keycode&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt;
+              &lt;span class=&quot;nv&quot;&gt;macro&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;
+                  &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;down&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keycodes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_LCTL&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tap&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keycodes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_LEFT&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;down&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keycodes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_LSFT&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;},&lt;/span&gt;
+                  &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tap&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keycodes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_RGHT&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;up&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keycodes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_LCTL&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;KC_LSFT&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tap&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keycodes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_BSPC&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;},&lt;/span&gt;
+                &lt;span class=&quot;pi&quot;&gt;],&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;}&lt;/span&gt;
+          &lt;span class=&quot;c1&quot;&gt;# 100ms以上長押ししたときだけ発動&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;term&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;only&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;hold&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;leaders&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# LEADERのあとに入れたキーの順番で分岐&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;leader&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;c1&quot;&gt;# twitterを開く&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_T&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;KC_W&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;KC_T&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keycode&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;start firefox -ArgumentList &quot;-url https&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;//twitter.com&quot;&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;leader&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;c1&quot;&gt;# コンパニオンアプリを送り込む&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_C&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;KC_M&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;KC_P&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keycode&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;LAUNCH_COMPANION&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# フォーカス中の画面がchatGPTのときだけ有効なキーマップ&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://chat.openai.com/.*&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;overrides&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# Shift+Enter押したらEnter, Enter押したらShift+Enterが押されるようにする&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;basic&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;trigger_mods&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Shift&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;trigger_key&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_ENT&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;replacement_key&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_ENT&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;w_layer_neg&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;trigger_mods&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[]&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;trigger_key&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;KC_ENT&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;replacement_key&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;S(KC_ENT)&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;layers&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;0xffff&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;negative_mask&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Shift&lt;/span&gt;
+&lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# Libreoffice Impressのときだけ有効&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.*Impress$&quot;&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;leaders&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;leader&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;c1&quot;&gt;# 上ぞろえ&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_A&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;KC_T&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;keycode&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;macro&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[{&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tap&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keycodes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;KC_LALT&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ont&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;pi&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;  &lt;/div&gt;
+
+&lt;/details&gt;
+
+&lt;p&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;vial対応ble-micro-pro&quot;&gt;Vial対応BLE Micro Pro&lt;/h3&gt;
+
+&lt;p&gt;RemapがQMK0.18準拠のプロトコルのサポートをやめるかもしれないということで、BLE Micro Proのファームウェアを更新する必要がありました。&lt;br /&gt;
+今後も設定ツールの変更にあわせてオンタイムにファームウェアを更新し続けるのは大変なので、&lt;a href=&quot;https://get.vial.today/&quot;&gt;Vial&lt;/a&gt;に移行することにしました。&lt;/p&gt;
+
+&lt;p&gt;VialもWebブラウザからQMKのキーマップを設定できるツールで、コンボやタップダンスやその他各種設定も変更できます。&lt;br /&gt;
+ブラウザ上だけでなくローカル環境での実行ファイルも用意されています。&lt;br /&gt;
+また、キーレイアウトなどの情報をキーボード側に保持しているほか、ファームウェアのバージョンに応じてキーコード定義を切り替えるようにもなっています。&lt;/p&gt;
+
+&lt;p&gt;これらの特徴のおかげで、一度セットアップを整えれば各種サービスの運営状況によらず長く使い続けられるようになると考えています。&lt;/p&gt;
+
+&lt;p&gt;BLE Micro Proは共通のファームウェアに対してキーボードごとの設定ファイルを書き込む構成です。&lt;br /&gt;
+この設定ファイルをQMKのinfo.jsonから生成するツールも更新し、Vial用の設定ファイルも生成できるようにしました。&lt;/p&gt;
+
+&lt;p&gt;なお、現時点では最新版のRemapにも対応しています。&lt;br /&gt;
+オリジナルのVialは古いVIAプロトコルにしか対応していないのですが、ちょっとだけ変更を加えて最新のVIAプロトコルにも対応しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://sekigon-gonnoc.github.io/BLE-Micro-Pro&quot;&gt;https://sekigon-gonnoc.github.io/BLE-Micro-Pro&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;今年はあんまり捗りませんでした。トラックボール付きで無線対応のキーボードとか、そのために更に消費電力を削減したBLE Micro Proのファームウェアなども開発中です。&lt;/p&gt;
+
+&lt;p&gt;この記事はCorne ECで書きました。&lt;/p&gt;</content><author><name></name></author><summary type="html">キーボード #2 Advent Calender 2023 9日目担当のせきごんです。BLE Micro Proなどキーボード関連のモジュールを色々作っています。</summary></entry><entry><title type="html">2022年の振り返り</title><link href="/2022/12/19/keyboard-advent-calendar.html" rel="alternate" type="text/html" title="2022年の振り返り" /><published>2022-12-19T00:00:00+00:00</published><updated>2022-12-19T00:00:00+00:00</updated><id>/2022/12/19/keyboard-advent-calendar</id><content type="html" xml:base="/2022/12/19/keyboard-advent-calendar.html">&lt;p&gt;&lt;a href=&quot;https://adventar.org/calendars/7646&quot;&gt;キーボード #2 Advent Calender 2022&lt;/a&gt; 19日目担当のせきごんです。BLE Micro Proなど&lt;a href=&quot;https://nogikes.booth.pm/&quot;&gt;キーボード関連のモジュールを色々&lt;/a&gt;作っています。&lt;/p&gt;
+
+&lt;p&gt;今年作ったものを振り返っていきます。&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#今年作ったもの&quot; id=&quot;markdown-toc-今年作ったもの&quot;&gt;今年作ったもの&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#静電容量式corne-corne-ec&quot; id=&quot;markdown-toc-静電容量式corne-corne-ec&quot;&gt;静電容量式Corne (Corne EC)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#静電容量スイッチスキャン用モジュール-254mmピッチ&quot; id=&quot;markdown-toc-静電容量スイッチスキャン用モジュール-254mmピッチ&quot;&gt;静電容量スイッチスキャン用モジュール (2.54mmピッチ)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#静電容量式キーボード用円錐バネ&quot; id=&quot;markdown-toc-静電容量式キーボード用円錐バネ&quot;&gt;静電容量式キーボード用円錐バネ&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#4x4静電容量式キーボード&quot; id=&quot;markdown-toc-4x4静電容量式キーボード&quot;&gt;4x4静電容量式キーボード&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#pseudobmp&quot; id=&quot;markdown-toc-pseudobmp&quot;&gt;PseudoBMP&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#接続先os判別機構&quot; id=&quot;markdown-toc-接続先os判別機構&quot;&gt;接続先OS判別機構&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#keyboard-quantizer-configurator&quot; id=&quot;markdown-toc-keyboard-quantizer-configurator&quot;&gt;Keyboard Quantizer Configurator&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#玉太郎2仮&quot; id=&quot;markdown-toc-玉太郎2仮&quot;&gt;玉太郎2（仮）&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#lulu-ec&quot; id=&quot;markdown-toc-lulu-ec&quot;&gt;lulu EC&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;今年作ったもの&quot;&gt;今年作ったもの&lt;/h2&gt;
+
+&lt;h3 id=&quot;静電容量式corne-corne-ec&quot;&gt;静電容量式Corne (Corne EC)&lt;/h3&gt;
+
+&lt;p&gt;XIAO RP2040と静電容量スイッチスキャン用モジュールを組み合わせた、Corneベースの静電容量式キーボードです。&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/2371017&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/2371017/02993181-b374-4185-928a-79bca3fec3a0_base_resized.jpg&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/2371017&quot; target=&quot;_blank&quot;&gt;Corne ECシリーズ 静電容量式自作キーボードキット - のぎけす屋 - BOOTH&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;* 2023/6/30までに発送予定です * はんだ付けが必要なキットです * 写真は作例です。キースイッチ、キーキャップ、電池基板等は同梱されていません。 * 購入前にビルドガイドをご確認ください * ビットトレードワンの静電容量式スイッチのハウジングは適合しません https://github.com/sekigon-gonnoc/CorneECWL Corne ECシリーズはfoostan氏作のCorneシリーズをベースに、NIZ静電容量式スイッチに対応させた自作キーボードキットです。 Corne EC：静電容量式スイッチをスキャンするためのモジュールとXIAO&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;静電容量スイッチスキャン用モジュール-254mmピッチ&quot;&gt;静電容量スイッチスキャン用モジュール (2.54mmピッチ)&lt;/h3&gt;
+
+&lt;p&gt;静電容量スイッチスキャン用モジュールも昨年のものから改版しています。&lt;br /&gt;
+昨年のモジュールは1.27mmピッチのピンヘッダで取り付けるタイプでしたが、はんだ付けが難しいという声もあったので2.54mmピッチのピンヘッダに変更しています。機能やサイズ感はそのままです。&lt;br /&gt;
+従来のモジュールを使用しているキットもあるので1.27mmピッチ版も継続します。&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/2710697&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/2710697/47be4a7c-7b37-47a8-9322-f129eec5e22d_base_resized.jpg&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/2710697&quot; target=&quot;_blank&quot;&gt;静電容量スイッチスキャン用モジュール - のぎけす屋 - BOOTH&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;Pro Microなどのマイコンボードと組み合わせて静電容量式自作キーボードを作るためのモジュールです マルチプレクサとオペアンプを搭載していて、最大8つのスキャンラインを切り替えて電圧を出力できます 静電容量式自作キーボードの設計については下記資料等を参照してください https://nogikes.booth.pm/items/2373281 **仕様は予告なく変更される場合があります** ピンの説明や使い方はこのページを確認してください https://github.com/sekigon-gonnoc/ec-switch-scan-module&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;静電容量式キーボード用円錐バネ&quot;&gt;静電容量式キーボード用円錐バネ&lt;/h3&gt;
+
+&lt;p&gt;静電容量式キーボードを自作するにはバネの入手性が悪いという問題があったので、バネを特注してみました。&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://shop.yushakobo.jp/404&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://cdn.shopify.com/s/files/1/0532/0880/9633/files/2000_1a8cb09e-7d61-4a25-ac99-1be2ea51051c.png?height=628&amp;amp;pad_color=ffffff&amp;amp;v=1663494255&amp;amp;width=1200&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://shop.yushakobo.jp/404&quot; target=&quot;_blank&quot;&gt;404 Not Found&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;最近はdeskeysも静電容量式キーボード用のバネを発売したらしいです。&lt;br /&gt;
+https://deskeys.io/products/des-ec-springs&lt;/p&gt;
+
+&lt;h3 id=&quot;4x4静電容量式キーボード&quot;&gt;4x4静電容量式キーボード&lt;/h3&gt;
+
+&lt;p&gt;金属ケースの静電容量式自作キーボードを作ってみました。&lt;br /&gt;
+後述のlulu ECの検証も兼ねています。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;今年もテンキーを作りたくなる季節がやってきたということで。aliで4x4の金属ケースを買ってきてこれをこうしてこうじゃ（金属ケースの静電容量式自作キーボード &lt;a href=&quot;https://t.co/dgVdoUsyLg&quot;&gt;pic.twitter.com/dgVdoUsyLg&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1493510324439248896?ref_src=twsrc%5Etfw&quot;&gt;February 15, 2022&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;pseudobmp&quot;&gt;PseudoBMP&lt;/h3&gt;
+
+&lt;p&gt;BLE Micro Proのメイン部品が手に入らなさ過ぎて困ったので、BL652にUSB機能を外付けしてBLE Micro Proとして振る舞うようにしてみました。&lt;br /&gt;
+大体動くようになったタイミングでBLE Micro Proの部品が買えたので無事お蔵入りしました。&lt;/p&gt;
+
+&lt;h3 id=&quot;接続先os判別機構&quot;&gt;接続先OS判別機構&lt;/h3&gt;
+
+&lt;p&gt;キーボードをWindowsに繋いでいるときとMacに繋いでいるときで動作を変えたいという話を聞いたので、接続先OSの判別方法を考えてみました。&lt;/p&gt;
+
+&lt;p&gt;USB機器をホストに繋ぐと、OSがデバイスを認識するためのエニュメレーションというプロセスが発生します。このプロセスの手順がOSによって微妙に異なり、OSからのリクエストをチェックすることでWindowsかMacかLinuxか判別できます。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;eeconfig(ledとかデフォルトレイヤとか)をOSごとに持てるようにしてみた。起動直後は前に繋いだOS向けの設定で立ち上がるけど、ホストにキーボードとして認識されるタイミングでそのOS向けの設定がロードされる感じが伝わるはず。SMKiJ有志の検証によるとMacもちゃんと認識するらしい &lt;a href=&quot;https://t.co/b5rUTcnmZr&quot;&gt;pic.twitter.com/b5rUTcnmZr&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1522845428416679936?ref_src=twsrc%5Etfw&quot;&gt;May 7, 2022&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;keyboard-quantizer-configurator&quot;&gt;Keyboard Quantizer Configurator&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://booth.pm/ja/items/2256612&quot;&gt;Keyboard Quantizer&lt;/a&gt;のファームウェアも地味に便利になってます。&lt;br /&gt;
+USキーボードをJIS設定のPCで使ったり、JISキーボードをUS設定のPCで使ったりしたいという要望に対応しました。先ほどのOS判別機構と合わせてブラウザから色々と設定できます。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;Keyboard Quantizer rev4のファームウェアを更新しました。&lt;br /&gt;USキーボードを日本語OSでいい感じにする（逆も）設定、&lt;br /&gt;Remapからコンボを設定できるようにする小技、&lt;br /&gt;接続先PCのOS種別判定、&lt;br /&gt;接続先OSに紐づけた設定の保存、&lt;br /&gt;これらをブラウザから設定するためのサイトなど&lt;a href=&quot;https://t.co/YcLmxkpng0&quot;&gt;https://t.co/YcLmxkpng0&lt;/a&gt; &lt;a href=&quot;https://t.co/arzLWwpfHD&quot;&gt;pic.twitter.com/arzLWwpfHD&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1527906499695374336?ref_src=twsrc%5Etfw&quot;&gt;May 21, 2022&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;玉太郎2仮&quot;&gt;玉太郎2（仮）&lt;/h3&gt;
+
+&lt;p&gt;センサをボールの下に入れる構成はボール部分の背が高くなって目立つので、ダブルセンサにして高さを抑えました。無線化できるように電圧・電流が小さいセンサを採用しています。&lt;br /&gt;
+ボールホルダの設計が微妙なので要修正。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;無線対応でダブルセンサで高さ抑えたやつ &lt;a href=&quot;https://t.co/2W2h4Qx30o&quot;&gt;pic.twitter.com/2W2h4Qx30o&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1545619043180093441?ref_src=twsrc%5Etfw&quot;&gt;July 9, 2022&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;lulu-ec&quot;&gt;lulu EC&lt;/h3&gt;
+
+&lt;p&gt;今年はGBというものに初めて参加してみました。&lt;br /&gt;
+普通に組むのはつまらないので静電容量スイッチに対応した基板を設計しています。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2022-12-18-16-52-00.jpg&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2022-12-18-16-53-00.jpg&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;左手を仮組したところ&lt;/td&gt;
+      &lt;td&gt;構成はCorne ECと同じくXIAO RP2040+静電容量スイッチスキャンモジュール+NIZスイッチ&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;この記事は玉太郎2(仮)で書きました。&lt;/p&gt;</content><author><name></name></author><summary type="html">キーボード #2 Advent Calender 2022 19日目担当のせきごんです。BLE Micro Proなどキーボード関連のモジュールを色々作っています。</summary></entry><entry><title type="html">2021年の振り返りとRP2040(RPi Pico)を使って分割キーボードの通信をUSBにする話</title><link href="/2021/12/19/keyboard-advent-calender.html" rel="alternate" type="text/html" title="2021年の振り返りとRP2040(RPi Pico)を使って分割キーボードの通信をUSBにする話" /><published>2021-12-19T00:00:00+00:00</published><updated>2021-12-19T00:00:00+00:00</updated><id>/2021/12/19/keyboard-advent-calender</id><content type="html" xml:base="/2021/12/19/keyboard-advent-calender.html">&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://adventar.org/calendars/6246&quot;&gt;キーボード #1 Advent Calender 2021&lt;/a&gt; 19日目担当のせきごんです。BLE Micro Proなど&lt;a href=&quot;https://nogikes.booth.pm/&quot;&gt;キーボード関連のモジュールを色々&lt;/a&gt;作っています。&lt;/p&gt;
+
+&lt;p&gt;このブログ？のタイトルの通り一年に一個くらいしか記事を書かないせいで項目が多くまとまりが無くなってしまったので、本編では一年間をざっくりと振り返ることにして、詳細な項目はおまけとして載せておきます。&lt;br /&gt;
+興味のある項目があったら読んでみてください。1つピックアップするならタイトルにも盛り込んだラズパイPicoで左右通信をUSBにする話がおすすめです。&lt;br /&gt;
+一覧と概要は下記のとおりです。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;目次&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#今年の印象的な出来事&quot;&gt;今年の印象的な出来事&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#半導体不足&quot;&gt;半導体不足&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#keyboard-quantizerのアップデート&quot;&gt;Keyboard Quantizerのアップデート&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#rp2040で遊ぶ&quot;&gt;RP2040で遊ぶ&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#おまけ&quot;&gt;おまけ&lt;/a&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#ecmx20&quot;&gt;ECMX20&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;静電容量/メカニカルスイッチ両対応の基板設計&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#トラックパッドic評価用基板&quot;&gt;トラックパッドIC評価用基板&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;トラックパッドで遊べるマクロパッド&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#pro-micro-web-writer&quot;&gt;Pro Micro Web Writer&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;ブラウザからPro Microにファームウェアを書き込む&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#keyboard-quantizer-utility&quot;&gt;Keyboard Quantizer Utility&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;アクティブなアプリに応じてレイヤを切り替えたりできる常駐アプリ&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#keyboard-quantizer-b&quot;&gt;Keyboard Quantizer B&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;USBキーボードをQMK対応させて無線化もできるドングル&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#keyboard-quantizer-rev4&quot;&gt;Keyboard Quantizer (rev.4)&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;メインMCUをRP2040（ラズパイPicoのマイコン）にしたバージョンの開発経緯&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#rp2040のqmk対応&quot;&gt;RP2040のQMK対応&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;RP2040でQMKを動かすまでの話&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#pico-micro&quot;&gt;Pico Micro&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;RP2040を使ったPro Microサイズ基板&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#rp2040を直接実装するキーボードについて&quot;&gt;RP2040を直接実装するキーボードについて&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;RP2040を直接実装する場合、atmega32u4とどんな違いがあるか検討&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#アニメーションの再生&quot;&gt;アニメーションの再生&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;OLEDでアニメーションを再生する&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#pico-pio-usb&quot;&gt;Pico-PIO-USB&lt;/a&gt;
+        &lt;ul&gt;
+          &lt;li&gt;分割キーボードの左右間通信をUSBにする&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;それでは今年を振り返っていきます。キーボードそのものという観点だと今年は昨年設計した &lt;a href=&quot;https://twitter.com/_gonnoc/status/1291912082112225283&quot;&gt;Corne ECWL&lt;/a&gt;（静電容量完全無線Corne）をほぼ一年中使っていて、新しいキーボードは作りませんでした。&lt;/p&gt;
+
+&lt;p&gt;では記事にするネタがないのかというとそんなことはなくて、今年も色々やってました。&lt;br /&gt;
+新作ハードとしては&lt;a href=&quot;https://nogikes.booth.pm/items/2712507&quot;&gt;トラックパッドIC評価用基板&lt;/a&gt;、&lt;a href=&quot;https://nogikes.booth.pm/items/2710739&quot;&gt;単4電池昇圧モジュール&lt;/a&gt;、&lt;a href=&quot;https://nogikes.booth.pm/items/2710697&quot;&gt;静電容量スイッチスキャン用モジュール&lt;/a&gt;、&lt;a href=&quot;https://nogikes.booth.pm/items/2910601&quot;&gt;ECMX20&lt;/a&gt;、&lt;a href=&quot;https://nogikes.booth.pm/items/3095820&quot;&gt;Keyboard Quantizer B&lt;/a&gt;、&lt;a href=&quot;https://nogikes.booth.pm/items/2256612&quot;&gt;Keyboard Quantizer(rev.4)&lt;/a&gt;、&lt;a href=&quot;https://nogikes.booth.pm/items/3214808&quot;&gt;Pico Micro&lt;/a&gt; があります。&lt;/p&gt;
+
+&lt;h2 id=&quot;今年の印象的な出来事&quot;&gt;今年の印象的な出来事&lt;/h2&gt;
+
+&lt;h3 id=&quot;半導体不足&quot;&gt;半導体不足&lt;/h3&gt;
+
+&lt;p&gt;今年一番印象的だったのは部品の入手難対応です。。。&lt;/p&gt;
+
+&lt;p&gt;今年一年でBLE Micro Pro、LPME-IO、トラックボール用レべル変換基板、静電容量スキャンモジュール、単4電池昇圧基板を部品変更、改版しました。写真を撮りなおしてないものも多数あり、画像とちょっと見た目の違うものが届くかもしれませんが機能的には同等なのでご容赦ください。&lt;/p&gt;
+
+&lt;p&gt;部品の値上りや在庫不足は来年も続きそうなので引き続き辛そう。。。&lt;/p&gt;
+
+&lt;h3 id=&quot;keyboard-quantizerのアップデート&quot;&gt;Keyboard Quantizerのアップデート&lt;/h3&gt;
+
+&lt;p&gt;次は昨年から展開しているKeyboard Quantizerシリーズのアップデートです。Keyboard Quantizerについて簡単に説明すると、USBキーボードやマウスの信号を変換してあたかもQMKに対応しているかのように振る舞わせられるデバイスです。自分はもっぱらマウス（トラックボール）と組み合わせて使っています。自作キーボードをお使いの方にはマウスにQMKのレイヤやマクロ機能を追加できるというと何となく便利さが伝わるのではないでしょうか。各マウス専用のソフトに依存せずどこでも使えるのも便利です。&lt;/p&gt;
+
+&lt;p&gt;1つ目のアップデートは無線出力対応版のKeyboard Quantizer Bです。無線出力に対応したことで、市販キーボードのQMK対応だけでなく自作キーボードの無線化にも使えるようになりました。&lt;/p&gt;
+
+&lt;p&gt;2つ目のアップデートはRP2040（ラズパイPicoに乗っているマイコン）を使用したKeyboard Quantizer(rev.4)です。これはどちらかというとatmega32u4の入手難に対応を迫られた形ですが、結果としてROM容量の増加、USBハブ絡みの動作の改善などを達成できました。&lt;/p&gt;
+
+&lt;h3 id=&quot;rp2040で遊ぶ&quot;&gt;RP2040で遊ぶ&lt;/h3&gt;
+
+&lt;p&gt;さて、RP2040を載せたKeyboard Quantizerのハードを設計したところで、ファームウェアを用意しなければなりません。&lt;br /&gt;
+RP2040で動くキーボードファームウェアにはKMKやPRKがありますが、新しいファームウェアの使い方を覚えるよりは簡単そうだったのでQMKが動くようにしました。RP2040上でもQMKが動くことがわかったので、ミッドマウントのUSB-Cコネクタを使用したpro microサイズのボードを設計したり、RP2040ならではの機能を実装してみたりもしました。詳細な内容はオマケにて。&lt;/p&gt;
+
+&lt;p&gt;ざっくり今年を振り返るとこんな感じです。来年の計画は特にありません。また面白いテーマを見つけたら手を動かしていこうと思います。&lt;/p&gt;
+
+&lt;p&gt;この記事はスマホとCorne ECWLで書きました。明日の担当はびあっこさん (@Biacco42) です。&lt;/p&gt;
+
+&lt;h2 id=&quot;おまけ&quot;&gt;おまけ&lt;/h2&gt;
+
+&lt;h3 id=&quot;ecmx20&quot;&gt;ECMX20&lt;/h3&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/2910601&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/2910601/e3c51476-0675-4118-90e6-654e60a54bfb_base_resized.jpg&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/2910601&quot; target=&quot;_blank&quot;&gt;ECMX20 - のぎけす屋 - BOOTH&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;- ECMX20は静電容量式スイッチ、メカニカルスイッチの両方に対応した自作キーボードキットです - 静電容量式スイッチで組み立てたあとにメカニカルスイッチで組み直すことは容易ですが、逆は難しいです - メカニカルスイッチの場合でも静電容量式と同様にスキャンするという今までにない方式のため、予期せぬ問題が発生する可能性があります 詳細はビルドガイドをご確認ください https://github.com/sekigon-gonnoc/ecmx20&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;昨年に引き続き静電容量式キーボードの検討も進めました。静電容量式自作キーボードの課題としてスイッチの種類がメカニカルスイッチに比べて少ないことがあげられます。せっかく自作するのであれば、メカニカル、静電容量含めて多くの選択肢からスイッチを選べるようにしたいところです。同じ配列でメカニカルと静電容量の両方のPCBを設計するという手もありますが、単純に手間が2倍になるので解決策としては微妙です。そこで考案したのが&lt;strong&gt;静電容量式ベースのメカニカル/静電容量式両対応スキャン方式&lt;/strong&gt;です。これは次の回路で実現できます。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/2021-12-18-15-02-42.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;この回路の下半分は静電容量式スイッチを示しています。静電容量式スイッチでは円錐ばねの状態による静電容量の変化を読み取ってスイッチの変位を連続的に検出しています。回路の上半分が今回工夫したメカニカルスイッチの読み取り回路を示しています。メカニカルスイッチのON/OFFによってコンデンサの接続状態が変化するため、静電容量式スイッチと同じ方式で静電容量をスキャンすることでスイッチの変化を検出できます。静電容量の変化がコンデンサが 繋がっていない状態 or 繋がっている状態 の2値的であるため、静電容量式とは異なり連続的な変化ではなくON/OFFのみの検出となります。さらに、このコンデンサを外付けの部品ではなくPCBのパターンで実現することで、外付け部品レス（ダイオードレス）のスイッチマトリクスにできます。&lt;/p&gt;
+
+&lt;p&gt;実際のパターンはこちらの画像のようになります。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-14-58-18.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-14-58-44.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;表面&lt;/td&gt;
+      &lt;td&gt;裏面&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;静電容量式スイッチ用のパターンの半分の裏側にも同様の電極を用意することで、2つの電極によるコンデンサとします。容量としては6pF程度になります。&lt;/p&gt;
+
+&lt;p&gt;静電容量のスキャンには静電容量スキャンモジュールを利用しました。スキャンに必要な部品が一通り実装されているので、列選択のピンとAD変換用のピンを何本か接続するだけでスキャンできます。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-15-06-22.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;スイッチ部の回路図。各SWについているRは実験用なので実際には不要です。静電容量スキャンモジュールを使うことでダイオードレスの回路が簡単に実現できます。&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;この方式を実装したマクロパッドがECMX20です。静電容量式スイッチを使う場合はスイッチのON/OFFを判定する閾値を調整することでAPC(Actuation Point Change)も実現できます。&lt;/p&gt;
+
+&lt;p&gt;その他のソフト的な工夫としてレイヤごとにVIA/REMAPからLEDを設定できるようにしたりしました。&lt;br /&gt;
+キーボードとはあまり関係がないので省きますが、Arduinoのシリアルプロッタのようなものをブラウザ上で実現して静電容量の変化をリアルタイムで表示したりもしました。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-15-09-19.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;スイッチを押下していくのに応じてグラフが変動します。キーボード以外にも使える汎用的なアプリです。&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;単純にダイオードレス・ゴーストレスのスイッチマトリクススキャン方法としても面白いと個人的には思っています。&lt;/p&gt;
+
+&lt;h3 id=&quot;トラックパッドic評価用基板&quot;&gt;トラックパッドIC評価用基板&lt;/h3&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/2712507&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/2712507/266e3f4d-207f-434c-8ced-94f66f66b58d_base_resized.jpg&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/2712507&quot; target=&quot;_blank&quot;&gt;トラックパッドIC(MTCH6102/IQS572)評価用基板 - のぎけす屋 - BOOTH&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;**表面実装部品のはんだ付けが必要なキットです** - Toybox Keyboardの右上に搭載しているトラックパッドを搭載したマクロパッドです - トラックパッド付き自作キーボードの実験ができます - 2021/3からマルチタッチ基板の導入が簡単になるようにメイン基板を変更しています。(古い基板でもブレッドボードなどがあれば導入できます。詳細はビルドガイドを参照してください) ビルドガイド https://github.com/sekigon-gonnoc/tp1s6-doc (参考)Toybox keyboard&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;トラックパッドICを乗せたマクロパッドです。基本的にはそれぞれのIC(シングルタッチ版はmtch6102、マルチタッチ版はiqs572)のデータシートに従ってセンサ基板を作ったものです。&lt;/p&gt;
+
+&lt;p&gt;シングルタッチ版のICでは”センサ電極の上に数mmのガラスやアクリルのオーバーレイを設置すること”となっていて、自分のためした範囲では液晶保護フィルムなどでは薄すぎて意図したとおりに動作しませんでした。そこで、センサ電極を基板裏面に配置して、基板（FR-4）をオーバーレイとして基板表面から操作するようにしました。&lt;br /&gt;
+また、I2Cの信号と電源をスペーサー経由でメイン基板から供給しています。今にして思えば上から止めるねじをプラネジにして表面のスルーホールはレジストで覆っておいたほうがよかったかなと思います。&lt;/p&gt;
+
+&lt;p&gt;入荷お知らせメールの登録が溜まっていますが手が回ってません。ごめんなさい。&lt;/p&gt;
+
+&lt;p&gt;同じICを使ったキットとして魔王様が&lt;a href=&quot;https://royal-keyboard-works.square.site/product/ToneScraper/14&quot;&gt;ToneScraper&lt;/a&gt;というキットを販売しています。こちらもどうぞ。&lt;/p&gt;
+
+&lt;h3 id=&quot;pro-micro-web-writer&quot;&gt;Pro Micro Web Writer&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://sekigon-gonnoc.github.io/promicro-web-updater/index.html&quot;&gt;https://sekigon-gonnoc.github.io/promicro-web-updater/index.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;昨年BLE Micro Pro Web Configuratorを作ってみて、ブラウザからマイコンと通信できるといろいろ楽しいことがわかったので作ってみました。&lt;/p&gt;
+
+&lt;p&gt;Pro MicroのCaterinaブートローダと通信してWebブラウザからhexファイルを書き込めます。去年設計したGRS-70ECがEE_HANDSを使っているので左右識別のeepromデータを書き込むオプションも用意しました。&lt;/p&gt;
+
+&lt;p&gt;名前の通りPro Microにしか対応しておらず、Caterinaブートローダが書き込まれていないElite-Cなどでは使用できません。DFUブートローダへの対応も検討してみましたが、Windowsではzadigでドライバを差し替える必要があってdfu-programmerと排他になってしまい、メリットが感じられなかったので中断しました。&lt;/p&gt;
+
+&lt;p&gt;Remapにファームウェア書き込み機能が追加されてから順調にアクセス数が下がってきています。&lt;/p&gt;
+
+&lt;h3 id=&quot;keyboard-quantizer-utility&quot;&gt;Keyboard Quantizer Utility&lt;/h3&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/keyboard-quantizer-utility&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://opengraph.githubassets.com/c931d75bd9ebfd6c7f98b8b85dc75986020c3013f5619a065638d2e475094487/sekigon-gonnoc/keyboard-quantizer-utility&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/keyboard-quantizer-utility&quot; target=&quot;_blank&quot;&gt;GitHub - sekigon-gonnoc/keyboard-quantizer-utility&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;Electron based task tray app to change default layer of keyboard quantizer or QMK enabled keyboard depends on active application. - sekigon-gonnoc/keyboard-quantizer-utility&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Keyboard Quantizerを使ってマウスをカスタマイズしていると、アプリごとにキーマップを変更したくなるシチュエーションが増えてきました。キーボードであれば適当なキーにレイヤ切り替えを割り当てるところですが、マウスはボタンが少ないので簡単にはいきません。&lt;/p&gt;
+
+&lt;p&gt;そこで作ってみたのがKeyboard Quantizer Utilityです。これはPC常駐型のアプリで、アクティブになっているウィンドウの名前に応じてキーボードにコマンドを送り、キーボードは受け取ったコマンドをもとにレイヤ切り替えなどの動作を実行できます。Quantizerの名前を冠していますが自作キーボード一般に適用できます。&lt;/p&gt;
+
+&lt;p&gt;最初はこれもブラウザから実装できないかと思ったのですが、ブラウザからほかのプロセスを見ることはできないので独立したアプリになっています。アクティブウィンドウの検出には&lt;a href=&quot;https://github.com/sindresorhus/active-win&quot;&gt;active-win&lt;/a&gt;というライブラリを使用しました。この記事を書くにあたりライブラリのページを見直してみたら、利用例として &lt;a href=&quot;https://github.com/zigotica/active-app-qmk-layer-updater&quot;&gt;active-app-qmk-layer-updater&lt;/a&gt;というものが紹介されていました。考えることはみな同じですね。&lt;/p&gt;
+
+&lt;p&gt;キーボード側にはRawHIDで受信したコマンドに応じた動作を実装する必要があります。このあたりの動作をまとめた&lt;a href=&quot;https://github.com/mmalecki/qmk_rc/blob/latest/qmk_rc.c&quot;&gt;qmk-rc&lt;/a&gt; というライブラリもあるようです。中身をみてみると分かるように、受信したコマンドに応じてswitch文で動作を分岐するだけなので、なにか実現したい動作があれば簡単に追加できます。&lt;/p&gt;
+
+&lt;h3 id=&quot;keyboard-quantizer-b&quot;&gt;Keyboard Quantizer B&lt;/h3&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://booth.pm/ja/items/3095820&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/3095820/b128a222-aa94-41f6-8ad5-2252213e0fba_base_resized.jpg&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://booth.pm/ja/items/3095820&quot; target=&quot;_blank&quot;&gt;Keyboard Quantizer B - のぎけす屋 - BOOTH&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;** 使い方によってはファームウェア開発が必要になる場合があります ** ** 初期不良の場合を除き修理依頼は受け付けておりません ** Keyboard Quantizerの無線対応版です。 Keyboard Quantizer B はUSBキーボードのキー入力を別のキー入力に変換し、有線または無線で送信できるデバイスです。 PCのソフトウェアに依存しないので、このデバイスを間にかませることでどの環境でも自分が設定したキー配列で入力できます。 そのため、どのPCでもCAPS LOCKをCtrlキーとして使えるようにしたり、お気に入りの配列で入力できるようになります。&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;QuantizerがPro Microを乗せる形だったころにBLE Micro Proを利用した無線化の検討は完了していたので、Keyboard Quantizer Bは低消費電力の実現を目標にしました。&lt;/p&gt;
+
+&lt;p&gt;メインマイコンの消費電力はもともと低かったのでホスト用マイコンの消費電力をいかに減らすかということに苦心し、クロックを落としたりスリープを挟んだりして低消費電力を実現しました。一方で、消費電力が低すぎるとモバイルバッテリなどに接続したときにしばらくするとバッテリの電源がオフになっていまうという問題があったので、わざと電力を消費するためのダミー抵抗の制御を追加しています。&lt;/p&gt;
+
+&lt;h3 id=&quot;keyboard-quantizer-rev4&quot;&gt;Keyboard Quantizer (rev.4)&lt;/h3&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://shop.yushakobo.jp/products/keyboard-quantizer&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;http://shop.yushakobo.jp/cdn/shop/products/rev3_rear.jpg?v=1612407455&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://shop.yushakobo.jp/products/keyboard-quantizer&quot; target=&quot;_blank&quot;&gt;Keyboard Quantizer - rev4 (未組立版)&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;Keyboard Quantizerは一般的なUSBキーボードを自作キーボード用のファームウェアの定番であるQMKに対応させるためのボードです。キー配列を自由に変えられるだけでなく、キーボードにレイヤ、マクロ、コンビネーションなどの機能を追加できるようになります。&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;RP2040搭載のKeyboard Quantizerです。開発中はrev.4ではなくRPというリビジョン名でしたが、有線版の正統な進化系ということでrev.4になりました。&lt;/p&gt;
+
+&lt;p&gt;発売としてはKeyboard Quantizer Bより後でしたが、実際の開発はこちらが先行していました。atmega32u4が品薄気味になってきていたのでファームウェアもないのに見切り発車で設計しました。初期の設計ではWS2812を搭載していましたが、目に煩かったのでQuantizer Bと同じく単色LEDx2の構成に落ち着きました。&lt;/p&gt;
+
+&lt;p&gt;RP2040のQMK対応はこのためにやりました。&lt;/p&gt;
+
+&lt;h3 id=&quot;rp2040のqmk対応&quot;&gt;RP2040のQMK対応&lt;/h3&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://scrapbox.io/self-made-kbds-ja/RP2040%E5%AF%BE%E5%BF%9C%E3%81%AEQMK(%E9%9D%9E%E5%85%AC%E5%BC%8F)%E3%82%92%E5%8B%95%E3%81%8B%E3%81%99&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://scrapbox.io/assets/img/content-logo.png&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://scrapbox.io/self-made-kbds-ja/RP2040%E5%AF%BE%E5%BF%9C%E3%81%AEQMK(%E9%9D%9E%E5%85%AC%E5%BC%8F)%E3%82%92%E5%8B%95%E3%81%8B%E3%81%99&quot; target=&quot;_blank&quot;&gt;RP2040対応のQMK(非公式)を動かす - Self-Made Keyboards in  Japan&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;QMK公式のRP2040対応（ChibiOSのRP2040対応）が待てないのでChibiOSを経由せず直接pico-sdkを使う実装でQMKが動くようにしてみましたsekigon-gonnoc https://github.com/sekigon-gonnoc/qmk_firmware/tree/rp2040 SPLIT, VIA, LED, OLED, MIDI などの機能には対応しています。対&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;新しいマイコンでQMKが動くようにするのは（マイコン側のライブラリが充実していれば）意外と簡単です。&lt;/p&gt;
+
+&lt;p&gt;最低限の動作でいいのであればUSB出力、タイマ、GPIOをQMKの関数/マクロに合わせてラッピングして、makefileをちょっといじると一体型のキーボードとして動くようになります。&lt;br /&gt;
+さらに分割型として動作させるにはserial系の関数を、via対応するにはeepromエミュレーションを、LEDを光らせるにはws2812のドライバを、OLEDに表示するにはi2cのドライバを、、、とそれぞれ実装していくことになります。&lt;/p&gt;
+
+&lt;p&gt;このファームウェアは拙作のKeyboard Quantizer(rev.4)だけでなく3arahtさんの&lt;a href=&quot;https://3araht.booth.pm/items/3379141&quot;&gt;giabalanaipico&lt;/a&gt;や&lt;a href=&quot;https://3araht.booth.pm/items/3421229&quot;&gt;chromatoneminipico&lt;/a&gt;などにも採用されており、十分使えるものになっていると思います。&lt;/p&gt;
+
+&lt;h3 id=&quot;pico-micro&quot;&gt;Pico Micro&lt;/h3&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/3214808&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://booth.pximg.net/c/620x620/9eb59d13-a644-4951-8279-08a5340df148/i/3214808/9e9b79be-7df8-490d-a991-43f7ce1b2ed7_base_resized.jpg&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://nogikes.booth.pm/items/3214808&quot; target=&quot;_blank&quot;&gt;PICO Micro(プロト版) - のぎけす屋 - BOOTH&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;** 使い方についてのサポートはできません ** Pro Microと互換性のあるフットプリントを採用したRP2040のブレークアウト基板です。USBコネクタにはミッドマウントのUSB Type-Cレセプタクルを採用し、基板の高さを抑えています。 RP2040はRaspberry Pi財団が開発したマイコンで、ARM Cortex-M0+のデュアルコア(133MHz)を搭載し、264kBのSRAM, I2C, UART, SPI, ADC, PIO, USBといった機能が利用できます。 https://github.com/sekigon-gonnoc/pico-micro&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;せっかくQMKが動くようになったので他の自作キーボードにも載せたいとなると、手っ取り早いのはPro Microの差し替えです。&lt;/p&gt;
+
+&lt;p&gt;Pro MicroサイズのRP2040基板は各社から販売されていますが、Pro Microを裏返して実装することも多い自作キーボードを前提に考えるといずれも&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;USBコネクタの背が高く2.5mmコンスルーを使って裏返しの状態で差し込むと浮いてしまう&lt;/li&gt;
+  &lt;li&gt;ブートローダを起動するためのボタンが表面にあって裏返すとアクセスできない&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;という問題がありました。&lt;/p&gt;
+
+&lt;p&gt;この問題を解決するために設計したのがPico Microです。ミッドマウントのコネクタを採用して高さを抑え、BOOTピンをスルーホールにすることで裏返しの状態でもアクセスできるようにしています。ピン配置はsparkfun pro micro RP2040と互換性を持たせています。&lt;/p&gt;
+
+&lt;p&gt;RP2040向けQMKではビルド時にオプションをつけることでPro Micro用のファームウェアをPico Micro向けに変換できるようにして、大抵の場合はファームウェアを編集することなく簡単に置き換えができます。&lt;/p&gt;
+
+&lt;h3 id=&quot;rp2040を直接実装するキーボードについて&quot;&gt;RP2040を直接実装するキーボードについて&lt;/h3&gt;
+
+&lt;p&gt;RP2040を直接実装する基板を2種類設計した経験をもとに、キーボードに直接実装する場合のatmega32u4とRP2040の差について比較してみます。&lt;br /&gt;
+RP2040のハードウェアデザインについては公式のドキュメントを参考にしてください。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://datasheets.raspberrypi.org/rp2040/hardware-design-with-rp2040.pdf&quot;&gt;https://datasheets.raspberrypi.org/rp2040/hardware-design-with-rp2040.pdf&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;RP2040(raspberry pi pico)のスペックとatmega32u4を比較してみるとまず目を引くのはROM容量の大きさです。RP2040のROMは外付けなので公平な比較ではありませんが、ラインナップとしては小容量の部類である2MB ROMでも数十円程度で入手できますし、それ以上の大きさ（~128MB）にすることもできます。例えばKeyboard Quantizerのデフォルトのファームウェアのサイズが68KBであることを考えると、キーボード向けとしてはかなり大きいと言えるのではないでしょうか。QMKのオプションをたくさん付けても使いきれなさそうです。&lt;/p&gt;
+
+&lt;p&gt;GPIOの本数も30本とatmega32u4の26本より若干多く、40%程度の分割キーボードであればピン直結で設計することもできます。&lt;br /&gt;
+処理能力も高く、OLEDなどのオプションをつけない場合のマトリクススキャン周波数は数十kHzに達します。マルチコアやPIOを活用することで時間にシビアな機能にも対応可能です。&lt;br /&gt;
+ブートローダは書き換え不可領域にあるため、うっかり文鎮化する危険もありません。ただし、ブートローダを起動するのに操作するピンがResetピンとBootピンの2つあるので、その点は注意が必要です。&lt;/p&gt;
+
+&lt;p&gt;一方、設計時には外付け部品の多さがネックになるかもしれません。&lt;/p&gt;
+
+&lt;p&gt;先ほどメリットの1つにROMの大きさを挙げましたが、RP2040はユーザーが書き換えられるROMを内蔵しておらず&lt;strong&gt;外付けROMが必須&lt;/strong&gt;です。このROMは（キーボードにおいては）それなりに高い60MHzの信号で動作するので信号線の配線にも気を使う必要があります。マイコンとROMをできるだけ近くに置く必要があるので、部品の配置にも制約が出そうです。&lt;/p&gt;
+
+&lt;p&gt;また、3.3V動作なのでVBUSからの降圧回路が必要だったり、電源まわりのパスコンの推奨数もそれなりにあります。atmega32u4と同様に外付けクロックも必要です。sparkfun pro micro RP2040などの画像を見ると普通のpro microに比べて実装密度が高いことが分かると思います。&lt;/p&gt;
+
+&lt;p&gt;パッケージもQFNのみなので手半田の難易度が高く、試作のハードルも多少あがります。&lt;/p&gt;
+
+&lt;p&gt;とはいえ、一度わかってしまえば設計する上でのatmega32u4との差は大してありません。&lt;br /&gt;
+自分の作りたいキーボードの要件に応じて使い分ければいいと思いますが、楽しいので一度作ってみると良いのではないでしょうか。&lt;/p&gt;
+
+&lt;h3 id=&quot;アニメーションの再生&quot;&gt;アニメーションの再生&lt;/h3&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;キーボードにディスプレイがついてると嬉しいことの例：Bad Appleが再生できる &lt;a href=&quot;https://t.co/YpFxfCsCdX&quot;&gt;pic.twitter.com/YpFxfCsCdX&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1459541487708893185?ref_src=twsrc%5Etfw&quot;&gt;November 13, 2021&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;Pico Microには最低2MBのROMを搭載することにしていますが、QMKで使用する容量はわずか2%程度に過ぎません。せっかくなので余っている容量を活用したいところです。&lt;/p&gt;
+
+&lt;p&gt;そこで試してみたのがOLED上でのアニメーションの再生です。電子工作オタクがディスプレイを動かせるようになると再生したがる事で有名なBad Apple!!のPVを再生してみました。&lt;br /&gt;
+このPVはもともと白黒の影絵なのでデータ量が小さく済みます。とはいっても、何かしらの動画コーデックを使うのではなく全フレームの画像をそのまま格納しているので、32x24@30fpsのフル尺だと612KBになりました。&lt;/p&gt;
+
+&lt;p&gt;これでようやくROMの1/3を使えました。まだ2/3も残っているのでいろいろ遊べそうです。&lt;/p&gt;
+
+&lt;p&gt;再生用データを含めたファームウェアは配布できないので、動画からデータを生成するためのスクリプトと再生用の関数を置いておきます。&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://gist.github.com/sekigon-gonnoc/817fc00e9c54e4aaf92002cca65187c7&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://github.githubassets.com/assets/gist-og-image-54fd7dc0713e.png&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://gist.github.com/sekigon-gonnoc/817fc00e9c54e4aaf92002cca65187c7&quot; target=&quot;_blank&quot;&gt;Bad Apple!! on OLED&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;Bad Apple!! on OLED. GitHub Gist: instantly share code, notes, and snippets.&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;pico-pio-usb&quot;&gt;Pico-PIO-USB&lt;/h3&gt;
+
+&lt;p&gt;まずはこの動画をご覧ください。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;RP2040（ラズパイPicoのマイコン）のPIOを活用してUSBホストを実装しました。元々持ってるUSB機能と合わせてホストとデバイスの両方の機能を持たせられます。動画は分割型自作キーボードの左右間通信をUSB化＋αのデモです。詳細はこの後のアドカレにて &lt;a href=&quot;https://twitter.com/hashtag/%E8%87%AA%E4%BD%9C%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#自作キーボード&lt;/a&gt; &lt;a href=&quot;https://twitter.com/hashtag/raspberrypipico?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#raspberrypipico&lt;/a&gt; &lt;a href=&quot;https://twitter.com/hashtag/raspberrypy?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#raspberrypy&lt;/a&gt; &lt;a href=&quot;https://t.co/Og7HSsygvh&quot;&gt;pic.twitter.com/Og7HSsygvh&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1472216681573658632?ref_src=twsrc%5Etfw&quot;&gt;December 18, 2021&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;分割型の自作キーボードではTRRS/TRSケーブルを使って通信する構成が大半を占めています。この構成に対して、本来交流のオーディオ信号のための経路に直流電圧やシリアル通信を流すのは問題がある、という指摘があります。私自身はそもそもケーブルいらない派なのですが、うっかり他のデバイスを接続してしまっても問題が起きない構成、というのは興味深い課題です。&lt;/p&gt;
+
+&lt;p&gt;市販の分割型キーボードがどうなっているのか調べてみると、最近発売されたMistel BAROCCO MD770では右側のキーボードがホスト用とデバイス用の2つのUSB-Cポートを備えています。左側キーボードのポートと右側キーボードのホスト用ポートをUSB-Cケーブルで接続して通信しているようです。RP2040のUSBはホスト機能にも対応していますが、今回の場合だとUSBはすでにPCへの接続に使ってしまっています。自作キーボードにUSBホスト機能を実装する、というとKeyboard Quantizerが思い浮かびますが、QuantizerではUSBホスト用のICをメインのマイコンとは別に実装しています。分割キーボードの左右間通信のためだけにICを1個追加するというのは割りに合わない気がします。左右のどちらも親機として動くようにしようとしたら両方にICを載せる必要がありますし、その場合、子機側のICは全く利用されません。MD770が片方しか親機になれないのはこういった事情もあるかもしれません。&lt;/p&gt;
+
+&lt;p&gt;そこで注目したのがRP2040のPIO(Programmable IO)機能です。PIO機能ではCPUと独立に動作するシンプルなステートマシンを利用してIOを操作します。これによりCPUだけでは実現できない信号を安定したタイミングで生成できます。PIOを利用してUSBの信号を生成した例はまだ見当たらなかったので、自分で実装してみました。&lt;/p&gt;
+
+&lt;div class=&quot;jekyll-linkpreview-wrapper&quot;&gt;
+    &lt;div class=&quot;jekyll-linkpreview-wrapper-inner&quot;&gt;
+        &lt;div class=&quot;jekyll-linkpreview-content&quot;&gt;
+            &lt;div class=&quot; jekyll-linkpreview-body&quot;&gt;
+                
+                &lt;div class=&quot;jekyll-linkpreview-image&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/Pico-PIO-USB&quot; target=&quot;_blank&quot;&gt;
+                        &lt;img src=&quot;https://opengraph.githubassets.com/914d2e2a582a21a6ef0180288aae3ad0276e94086e28e7457fa1f9d8e70ed540/sekigon-gonnoc/Pico-PIO-USB&quot; /&gt;
+                    &lt;/a&gt;
+                &lt;/div&gt;
+                
+                &lt;h2 class=&quot;jekyll-linkpreview-title&quot;&gt;
+                    &lt;a href=&quot;https://github.com/sekigon-gonnoc/Pico-PIO-USB&quot; target=&quot;_blank&quot;&gt;GitHub - sekigon-gonnoc/Pico-PIO-USB&lt;/a&gt;
+                &lt;/h2&gt;
+                &lt;div class=&quot;jekyll-linkpreview-description&quot;&gt;USB host/device implementation using PIO of raspberry pi pico (RP2040). - sekigon-gonnoc/Pico-PIO-USB&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;このライブラリはUSB Full-speedのホスト機能（Low-speedには未対応）をPIOを利用して実現しています。ハードウェア的にはコネクタ以外に必須の部品はありませんが、D+/D-に直列抵抗（22Ω）を入れたほうが良いです。USBの規格的には15kΩのプルダウン抵抗も必要ですがRP2040の内部プルアップ抵抗（80kΩ）で十分動作します。&lt;/p&gt;
+
+&lt;p&gt;マイコンのリソースとしては全体でROM 10KB, RAMも10KBくらい使用します。RP2040のメモリ容量に比べると十分小さいです。D+/D-としては2つの連続したGPIOピンを選んで使用できます。PIOは2つ必要で、受信用に1個のPIOのプログラムメモリを専有します。送信用のPIOでは22ステップ分のプログラムメモリと1個のステートマシンを利用します。ws2812用信号の生成部くらいなら共存できそうです。&lt;br /&gt;
+実行時間としては、1msごとに送受信用のハンドラが起動し、送信完了待ち・受信完了待ちの数us~数百usの間CPUを占有します。そのため、サンプルではほかのプログラムの影響を受けない/与えないようにCore1にこれらの処理を割り当てています。&lt;/p&gt;
+
+&lt;p&gt;このライブラリを利用してQMKのRawHID(≒VIA)により双方向の左右間通信を実現しました。RawHIDにはマトリクス状態取得コマンドが用意されていて、VIA/REMAPのマトリクス確認機能に利用されています。通信間隔は1コマンド（=64byte）/1msで実用上十分な速度でマトリクスの状態が取得できます。RawHIDのコマンドは&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;raw_hid_receive_kb&lt;/code&gt;に自分で追加できるので、マトリクスの状態だけでなくエンコーダなどの情報が必要になったらこれらの混合コマンドを用意することで実現できます。双方向の通信なのでLEDの同期なども簡単に実現できそうです。&lt;/p&gt;
+
+&lt;p&gt;開発にあたって苦労したのはソフトウェアのチューニングです。信号自体はPIOを使うことで安定して送受信できるのですが、プロトコルを実現するソフトウェアのタイミングも意外とシビアで大変でした。上で説明したようにRP2040にはプログラム用ROMが内蔵されておらず、適宜外付けのROMから読み込んでいます。キャッシュに乗っていれば素早く実行されるのですが、なにも制御しないと実行時間が安定せずプロトコルが成立しませんでした。最終的にはUSBの動作に関する部分はすべてRAMに読み込んでから実行するように指定することで実行時間が安定し、所望の動作が実現できました。コンパイラの最適化は最高レベルが必須で、ちょっとした書き方の差により動作が左右される部分もありました。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-15-24-59.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;D+/D-をロジックアナライザで観察した結果。1msごとに通信しているのが分かります。RP2040の処理性能をもってすればこのくらいの占有率の処理ならQMKのメイン処理と同じコアに入れても問題なく動作しそうです。サンプルプログラムではマルチコアの検討もかねて念のためCore1に割り振っています。&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-15-26-00.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1周期分の通信を拡大してみた結果。DATA0とラベルされているのがホストからデバイスへのコマンドで、DATA1が前の周期のコマンドに対するデバイスからホストへの応答を示しています。&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;先ほどの動画に出てきたPico-Pico-USBはこの機能の検証用に作ったmeishiサイズのキーボードです。ホスト用のUSB-CポートはPico MicroのGPIOに繋がっています。1つのキーボードに同じ形状のポートが2つ存在するとそれはそれで差し間違いのリスクが生じそうですが、差し間違えたとしても動作しないだけで破損のリスクはないので良しとしましょう。&lt;br /&gt;
+本当はRP2040を直接実装した基板にしたかったのですが今日の記事に間に合わないのでPico Micro/Pro Micro RP2040を実装する形になりました。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-15-31-54.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-15-30-15.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;回路図。念のためD+/D-のプルダウン抵抗と直列抵抗を入れられるようになっています。無くても動きます。&lt;/td&gt;
+      &lt;td&gt;Pico-Pico-USBのPCB&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;サンプルプログラムとしてはQMKのsplitを利用したシンプルな実装と、splitを利用せずcustom_matrixの中で通信結果を利用する発展形の2つ用意しました。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/sekigon-gonnoc/qmk_firmware/tree/rp2040/keyboards/pico_pico_usb&quot;&gt;https://github.com/sekigon-gonnoc/qmk_firmware/tree/rp2040/keyboards/pico_pico_usb&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;左右それぞれのキーボードからするとどちらもホストに接続された状態になっているので動作に違いはありません。どちらのキーボードもホスト用ポートから受信したマトリクスの状態を自分のマトリクスに追加して自分のホストに送信します。QMKのsplitを利用する場合はcustom_transportを実装してデータを処理しています。custom_transportのうち実装が必要なのは&lt;a href=&quot;https://github.com/sekigon-gonnoc/qmk_firmware/tree/rp2040/keyboards/pico_pico_usb/simple_split/simple_split.c#L81&quot;&gt;transport_mastser&lt;/a&gt;だけです。下流側のデバイスに対してVIAのマトリクス取得コマンドを発行し、受け取った結果をslave_matrixに反映させます。下流側のデバイスではVIAが有効になっていればそのままよしなに通信してくれるので、&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;transport_slave&lt;/code&gt;は不要です。&lt;/p&gt;
+
+&lt;p&gt;各キーボードは自分の下流側のデバイスから受け取ったデータと自分のデータを統合して上流に流すので、3台以上のキーボードを接続することもできます。ただし、QMKのsplit機能は2分割を前提としていて3台以上の構成に対応できません。この場合はsplitではなくcustom_matrixを利用する必要があります。とはいっても通信部分はPico-PIO-USBとQMKのRaw HIDが利用できるので、意外とシンプルに実装できます。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-23-08-00.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3台以上繋いだ時のデータの流れ&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;マウスなどのデバイスを接続して連動させることも（通信できる条件を満たしていれば）可能です。デモの動画では手元の無線トラックボールがLow-Speedデバイスだったため、Keyboard Quantizerを噛ませてFull-Speedに変換して認識させています。&lt;/p&gt;
+
+&lt;p&gt;自分が用意したUSBケーブルの中で最長のものが1.8mで、この長さでも問題なく通信できています。&lt;br /&gt;
+本来のUSBでは受信部のハードウェアが差動レシーバになっていて、ケーブルが伸びても安定した通信ができるようになっています。しかし、pico-pio-usbでは差動レシーバが存在しないためD+だけを使ってデータを受信しています。そのため、あまりに長いケーブルだと通信が成立しなくなる可能性はありますが、少なくとも1.8mのケーブルでも通信できるのであれば左右間通信用としては実用上十分ではないでしょうか。QKMの独自のシリアル通信プロトコルに比べるとUSBのほうが通信エラーチェックや再送の仕組みも充実しているので、その点でも安心です。&lt;/p&gt;
+
+&lt;p&gt;いまのところホスト機能にしか対応していないので、PIO-USBで追加したポートに対して通常のUSBポートを接続する構成しか実現できません。ケーブルの取り回しを考えるとポートの配置に制約ができてしまうので、デバイス機能にも対応させてPIO-USB同士での通信にも対応させたいです。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-23-19-00.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;img src=&quot;/assets/images/2021-12-18-23-24-00.png&quot; alt=&quot;&quot; /&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;上側にポートが集中しているデザイン&lt;/td&gt;
+      &lt;td&gt;違う辺の上にポートを配置した場合&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;そのほか、USBハブやUSB Low-speedへの対応にも挑戦してみようと思っています。&lt;/p&gt;
+
+&lt;p&gt;おまけは以上です。&lt;/p&gt;</content><author><name></name></author><summary type="html"></summary></entry><entry><title type="html">チラシ-F.gbr</title><link href="/2020/12/11/keyboard-advent-calendar.html" rel="alternate" type="text/html" title="チラシ-F.gbr" /><published>2020-12-11T14:38:38+00:00</published><updated>2020-12-11T14:38:38+00:00</updated><id>/2020/12/11/keyboard-advent-calendar</id><content type="html" xml:base="/2020/12/11/keyboard-advent-calendar.html">&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://adventar.org/calendars/5279&quot;&gt;キーボード #1 Advent Calendar 2020&lt;/a&gt; 12 日目の担当、せきごんです。&lt;/p&gt;
+
+&lt;p&gt;自作キーボード用のモジュールとかちょっと変わった自作キーボードを作っています。&lt;/p&gt;
+
+&lt;p&gt;今年もチラ裏の予定でしたが宣伝っぽい内容が多かったので表面になりました。&lt;/p&gt;
+
+&lt;p&gt;今年作ったものをざっと振り返っていきます。&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#今年作ったもの&quot; id=&quot;markdown-toc-今年作ったもの&quot;&gt;今年作ったもの&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#トラックボールモジュール用レベル変換基板&quot; id=&quot;markdown-toc-トラックボールモジュール用レベル変換基板&quot;&gt;トラックボールモジュール用レベル変換基板&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#kugel-1-rev2&quot; id=&quot;markdown-toc-kugel-1-rev2&quot;&gt;Kugel-1 rev2&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#ble-micro-pro-web-configurator&quot; id=&quot;markdown-toc-ble-micro-pro-web-configurator&quot;&gt;BLE Micro Pro Web Configurator&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#toybox-keyboard&quot; id=&quot;markdown-toc-toybox-keyboard&quot;&gt;Toybox keyboard&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#lpme-io2&quot; id=&quot;markdown-toc-lpme-io2&quot;&gt;LPME-IO2&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#keyboard-quantizer&quot; id=&quot;markdown-toc-keyboard-quantizer&quot;&gt;Keyboard Quantizer&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#corne-ecwl&quot; id=&quot;markdown-toc-corne-ecwl&quot;&gt;Corne ECWL&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#meec&quot; id=&quot;markdown-toc-meec&quot;&gt;meEC&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#grs-70ec&quot; id=&quot;markdown-toc-grs-70ec&quot;&gt;GRS-70EC&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#今年を振り返って&quot; id=&quot;markdown-toc-今年を振り返って&quot;&gt;今年を振り返って&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#追記20201220&quot; id=&quot;markdown-toc-追記20201220&quot;&gt;追記(2020/12/20)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;今年作ったもの&quot;&gt;今年作ったもの&lt;/h2&gt;
+
+&lt;h3 id=&quot;トラックボールモジュール用レベル変換基板&quot;&gt;トラックボールモジュール用レベル変換基板&lt;/h3&gt;
+
+&lt;p&gt;ビットトレードワンのトラックボールモジュールを自作キーボードで使うための基板。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://nogikes.booth.pm/items/2008258&quot;&gt;BOOTH&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;今週販売のお知らせがあるという例のトラックボール用レベル変換基板ができました。ProMicroの空きピン2本に繋げばOK。ケーブルの根本に負荷が掛からないように上手いことやってね。サイズ小さいのでマウントプレートの穴通せるからこの前のツイートのマウンタでキーの代わりにつけられそう &lt;a href=&quot;https://t.co/3nnFPgwcrj&quot;&gt;pic.twitter.com/3nnFPgwcrj&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1252142822368489472?ref_src=twsrc%5Etfw&quot;&gt;April 20, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;kugel-1-rev2&quot;&gt;Kugel-1 rev2&lt;/h3&gt;
+
+&lt;p&gt;トラックボール部分を先ほどのモジュールに変更したやつ。&lt;/p&gt;
+
+&lt;p&gt;このキーボードのためにレベル変換基板を設計したといっても過言ではない。  &lt;br /&gt;
+特に理由もなくロープロ版がお蔵入りになっている。。。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;サムネが反映されてないけどrev2はビット・トレード・ワンのトラックボールモジュールを使います。 &lt;a href=&quot;https://t.co/oTA0Csy65F&quot;&gt;pic.twitter.com/oTA0Csy65F&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1274578368592142337?ref_src=twsrc%5Etfw&quot;&gt;June 21, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;スペーサー足りてないけどロープロ版Kugel-1の試作機できた &lt;a href=&quot;https://t.co/cpGrUUMRA7&quot;&gt;pic.twitter.com/cpGrUUMRA7&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1281792033993060352?ref_src=twsrc%5Etfw&quot;&gt;July 11, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;ble-micro-pro-web-configurator&quot;&gt;BLE Micro Pro Web Configurator&lt;/h3&gt;
+
+&lt;p&gt;Web ブラウザ(Chrome)から BLE Micro Pro のアップデートと初期設定ができるようにしたやつ。&lt;/p&gt;
+
+&lt;p&gt;BLE Micro Pro の新ファームでキーマップ書き換えなどが簡単にできるようになったのはいいものの、&lt;br /&gt;
+依然として最初の導入部分でトラブルが多かったこともあって作ってみた。&lt;/p&gt;
+
+&lt;p&gt;体感としては導入に関するトラブル相談はだいぶ減った。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;とりあえず動いたので公開しました。マウスカチカチするだけでChromeからBLE Micro Proのアップデートとか設定とか（多分）できるやつです&lt;a href=&quot;https://t.co/H3qNXSfMYJ&quot;&gt;https://t.co/H3qNXSfMYJ&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1249260867339702272?ref_src=twsrc%5Etfw&quot;&gt;April 12, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;toybox-keyboard&quot;&gt;Toybox keyboard&lt;/h3&gt;
+
+&lt;p&gt;トラックパッドがついてるやつ。&lt;/p&gt;
+
+&lt;p&gt;地味にさっきのレベル変換基板を活用している。&lt;/p&gt;
+
+&lt;p&gt;IQS525 というマルチタッチ対応の IC を使ったトラックパッドモジュールを試作してみたりもしたが、&lt;br /&gt;
+校正に専用の治具が必要で自作には向かなそうなのでシングルタッチになった。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;新しいキーボードできた。トラックパッド搭載、Pro Micro1個またはBLE Micro Pro1~2個で動いて、無線で動かす場合には単4電池が使える。トラックパッドの部分を上段1Ux3その下が1U, 1.5Uに置き換えて普通の65%っぽく使うことも出来る。名前はtoybox（仮称）。部品少し余ってるからBoothに入れるかも &lt;a href=&quot;https://t.co/cLfYC5HDSP&quot;&gt;pic.twitter.com/cLfYC5HDSP&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1263428129621602305?ref_src=twsrc%5Etfw&quot;&gt;May 21, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;lpme-io2&quot;&gt;LPME-IO2&lt;/h3&gt;
+
+&lt;p&gt;LPME-IO の待機時消費電力を更に減らしたやつ。&lt;/p&gt;
+
+&lt;p&gt;Toybox の開発で得た知見をフィードバックした。&lt;/p&gt;
+
+&lt;p&gt;キーボードに合わせてハンダブリッジが必要になったけど今のところ問題なさそう？&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;LPME-IO | のぎけす屋 &lt;a href=&quot;https://t.co/gsfobcKyQm&quot;&gt;https://t.co/gsfobcKyQm&lt;/a&gt; &lt;a href=&quot;https://twitter.com/hashtag/booth_pm?src=hash&amp;amp;ref_src=twsrc%5Etfw&quot;&gt;#booth_pm&lt;/a&gt; &lt;br /&gt;LPME-IO2になりました。キーボードに応じたハンダブリッジが必要になったかわりに待機時の消費電力が50から75%くらい改善されました&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1320196414492733443?ref_src=twsrc%5Etfw&quot;&gt;October 25, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;keyboard-quantizer&quot;&gt;Keyboard Quantizer&lt;/h3&gt;
+
+&lt;p&gt;一般的な USB キーボードを QMK 対応するやつ。&lt;/p&gt;
+
+&lt;p&gt;トラックポイントがついてるメカニカルキーボードが発売されて一瞬欲しくなり、  &lt;br /&gt;
+「でも、QMK 対応してないんでしょう？」って物欲が抑えられたので作ってみた。&lt;/p&gt;
+
+&lt;p&gt;最近ちょうどいいケースに入るようになって製品感が増した。&lt;br /&gt;
+NKRO なキーボード等にはまだ対応していないので、&lt;br /&gt;
+ファームのどこをいじったらいいのかとか、もう少し技術情報をまとめたい。&lt;/p&gt;
+
+&lt;p&gt;物欲が創作欲に変換されたので発端のキーボードは結局買ってない。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-conversation=&quot;none&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;普通のキーボードをQMK対応にし太郎はKeyboard Quantizerという名前になりました。2個ポートがあるのでキーボード2台で分割扱いにしたりできる。VIAにも対応させてみたけど普通のキーボードはキー数が多いのでPro Microだと2レイヤしか設定できない。。。 &lt;a href=&quot;https://t.co/LTcvk7v9PF&quot;&gt;pic.twitter.com/LTcvk7v9PF&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1288372614608506881?ref_src=twsrc%5Etfw&quot;&gt;July 29, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;普通のUSBキーボードをQMK化できるKeyboard Quantizerが新しくなりました。atmega32u4を内蔵＆それっぽいケース&lt;a href=&quot;https://t.co/xrhPC8MfAO&quot;&gt;https://t.co/xrhPC8MfAO&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1335434363241041920?ref_src=twsrc%5Etfw&quot;&gt;December 6, 2020&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;corne-ecwl&quot;&gt;Corne ECWL&lt;/h3&gt;
+
+&lt;p&gt;Corne を静電容量&amp;amp;無線対応したやつ。一種の&lt;a href=&quot;https://ixyqcjwy.fanbox.cc/posts/376960&quot;&gt;敵討ち&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;はじめて技術情報を文書にまとめたので詳細はそちらに。&lt;br /&gt;
+年内に再入荷予定。&lt;/p&gt;
+
+&lt;p&gt;ついでに単 4 電池で駆動するためのモジュールも作ってみた。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;静電容量式完全無線Corne 打鍵動画 &lt;a href=&quot;https://t.co/4kfk9xmCDK&quot;&gt;pic.twitter.com/4kfk9xmCDK&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1291912082112225283?ref_src=twsrc%5Etfw&quot;&gt;August 8, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;書くの飽きたのはRe:VIEWでsiunitx使ってμAをちゃんと表示するのができなくて諦めただけで内容はちゃんと書きました&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1305461771046584322?ref_src=twsrc%5Etfw&quot;&gt;September 14, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;単4電池を昇圧してBLE Micro Proの電源にするためのモジュール。電池の電圧が下がってきたらカラータイマーが点滅して教えてくれる &lt;a href=&quot;https://t.co/TYPf6hUOXi&quot;&gt;pic.twitter.com/TYPf6hUOXi&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1301428345653977089?ref_src=twsrc%5Etfw&quot;&gt;September 3, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;meec&quot;&gt;meEC&lt;/h3&gt;
+
+&lt;p&gt;ビットレの静電容量スイッチと NiZ の静電容量スイッチを比較するためのやつ。&lt;/p&gt;
+
+&lt;p&gt;スキャン用の回路まで含めた Pro Micro サイズの基板を作ってみた。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;僕にとっては割とどうでもいい情報ですがNIZとビットレの光り方比較です &lt;a href=&quot;https://t.co/JjX8nHyGPY&quot;&gt;pic.twitter.com/JjX8nHyGPY&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1312683929384579078?ref_src=twsrc%5Etfw&quot;&gt;October 4, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;und&quot; dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://t.co/c0dQDZTzUL&quot;&gt;https://t.co/c0dQDZTzUL&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1317089002260844544?ref_src=twsrc%5Etfw&quot;&gt;October 16, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h3 id=&quot;grs-70ec&quot;&gt;GRS-70EC&lt;/h3&gt;
+
+&lt;p&gt;ビットレの静電容量スイッチを使ったやつ。&lt;/p&gt;
+
+&lt;p&gt;外形が微妙に CherryMX 系のマウントプレートに適合してなかったり、&lt;br /&gt;
+キーを並べると NiZ とちがってスペーサーがほとんど入らなかったりして結構苦しんだ。&lt;br /&gt;
+(これは NiZ にも言えることですが)スタビもないし。&lt;/p&gt;
+
+&lt;p&gt;meEC と違ってスキャン用の回路だけをモジュール化していて、Pro Micro と組み合わせて使う。&lt;/p&gt;
+
+&lt;p&gt;今から微修正して年内にベータ版を出したい。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;GRS-70ECという自作キーボードの試作品。ビットレのスイッチを使った静電容量式自作キーボード。アナログ回路周りをモジュール化したので、Pro MicroとTRRSジャックとリセットスイッチとこのモジュールをはんだ付けするだけ。スイッチの組み立てが面倒だけど。ちょっと修正して今年中になんか出したい &lt;a href=&quot;https://t.co/QUFdKNAM5x&quot;&gt;pic.twitter.com/QUFdKNAM5x&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1337019740514967552?ref_src=twsrc%5Etfw&quot;&gt;December 10, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;https://platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;今年を振り返って&quot;&gt;今年を振り返って&lt;/h2&gt;
+
+&lt;p&gt;今年の前半は昨年に引き続きポインティングデバイス、後半は静電容量式が中心だった感じ。トラックパッドはそのどちらでもあるかな？&lt;/p&gt;
+
+&lt;p&gt;作ってみたいものが多すぎて開発にリソースを投入しまくったせいで継続的な販売ができてないものが多いのが来年の課題。&lt;/p&gt;
+
+&lt;p&gt;この記事は Corne ECWL と GRS-70EC で書きました。&lt;/p&gt;
+
+&lt;h2 id=&quot;追記20201220&quot;&gt;追記(2020/12/20)&lt;/h2&gt;
+
+&lt;p&gt;そういえば BLE Micro Pro の Type-C 版も今年作ったものだった。&lt;/p&gt;
+
+&lt;p&gt;コネクタの専有面積が大きくなって部品が収まらなかったので抵抗を小さく(1608-&amp;gt;1005)している。&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot;&gt;&lt;p lang=&quot;ja&quot; dir=&quot;ltr&quot;&gt;1月に頼んでようやく届いた試作品。Type-C版BLE Micro Pro &lt;a href=&quot;https://t.co/sCdKPuypIl&quot;&gt;pic.twitter.com/sCdKPuypIl&lt;/a&gt;&lt;/p&gt;&amp;mdash; せきごん (@_gonnoc) &lt;a href=&quot;https://twitter.com/_gonnoc/status/1253251616657993728?ref_src=twsrc%5Etfw&quot;&gt;April 23, 2020&lt;/a&gt;&lt;/blockquote&gt;</content><author><name></name></author><summary type="html"></summary></entry></feed>
